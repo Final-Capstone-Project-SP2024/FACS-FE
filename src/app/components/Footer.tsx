@@ -5,7 +5,7 @@ export default function Footer() {
     <div>
       <footer className="fix">
         <div>
-          <h1>#ducanhtrollac</h1>
+          <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <a href="https://github.com/ducanhnt22" target="_blank" className="hover:underline">ducanhnt22</a>. All Rights Reserved.</span>
         </div>
       </footer>
     </div>
