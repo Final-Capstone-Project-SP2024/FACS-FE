@@ -1,2 +1,2 @@
-import { getUsers } from "./api";
-export { getUsers };
+import { getUsers, getCamera, getLocation, getRecords } from "./api";
+export { getUsers, getCamera, getLocation, getRecords};
