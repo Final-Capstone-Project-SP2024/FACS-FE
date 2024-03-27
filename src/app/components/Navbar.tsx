@@ -11,7 +11,7 @@ export default async function Navbar() {
     <header className="w-full">
       <div>
         <nav className="shadow">
-          <div className="flex justify-between items-center py-6 px-10 container mx-auto">
+          <div className="flex justify-between items-center py-2 px-10 container mx-auto">
             <div>
               <a href="/" className="text-2xl font-bold bg-gradient-to-tr from-red-500 to-yellow-600 bg-clip-text text-transparent hover:cursor-pointer">Fire Alarm Camera Solution</a>
             </div>

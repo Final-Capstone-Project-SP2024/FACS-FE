@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
           });
   
           const user = await res.json();
-          console.log(user);
+          // console.log(user);
 
           if (res.ok && user) {
             return user;
@@ -53,6 +53,7 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token, user }) {
       session.user = token as any;
+      // console.log(token);
       return session;
     },
   },

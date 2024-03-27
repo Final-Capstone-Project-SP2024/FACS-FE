@@ -2,6 +2,7 @@
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import React, { useState } from 'react'
+import login from '../../../../public/login-img.jpeg';
 
 export default function SignIn() {
     const [securityCode, setSecurityCode] = useState<string>("");
@@ -16,9 +17,10 @@ export default function SignIn() {
                 securityCode,
                 password,
                 redirect: true,
-                callbackUrl: "/dashboard",
+                callbackUrl: "/",
             });
             console.log(res);
+
         } catch (error) {
             console.log(error);
         }
@@ -27,7 +29,7 @@ export default function SignIn() {
     return (
         <div className='flex flex-col md:flex-row h-screen items-center justify-center'>
             <div className="bg-indigo-600 hidden lg:block w-full md:w-1/2 xl:w-2/3 h-screen">
-                <img src="https://source.unsplash.com/random" alt="" className="w-full h-full object-cover" />
+                <Image src={login} alt="" className="w-full h-full object-cover" />
             </div>
             <div className="bg-white w-full md:max-w-md lg:max-w-full md:mx-auto md:w-1/2 xl:w-1/3 h-screen px-6 lg:px-16 xl:px-12 flex items-center justify-center">
                 <div className="w-full h-100">

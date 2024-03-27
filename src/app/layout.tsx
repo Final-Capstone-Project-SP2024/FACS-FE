@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Footer, Navbar } from './components'
 import AuthProvider from '@/context/AuthProvider'
+import Sidebar from './components/Sidebar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,9 +22,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <div>
           <AuthProvider>
-            <Navbar/>
-            <main className='flex-1'>{children}</main>
-            <Footer/>
+            <Navbar />
+            <div className='flex'>
+              <Sidebar />
+              <main>{children}</main>
+            </div>
           </AuthProvider>
         </div>
       </body>
