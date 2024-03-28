@@ -1,4 +1,4 @@
-import { ICameras, ILocations, IUsers } from "../types";
+import { ICameras, ILocations, IRecords, IRecordsDetail, IUsers } from "../types";
 
 export async function getUsers(token: string | undefined): Promise<IUsers> {
     // console.log(`${process.env.API_URL}/Users`);
@@ -49,7 +49,7 @@ export async function getRecords(token:string | undefined) {
     return res.json();
 }
 
-export async function getRecordsDetails(token:string | undefined, recordId: string) {
+export async function getRecordsDetails(token:string | undefined, recordId: string){
     console.log(`${process.env.API_URL}/Record/${recordId}`);
     const res = await fetch(`${process.env.API_URL}/Record/${recordId}`, {
         headers: {

@@ -1,6 +1,6 @@
 export interface IUsers {
     users: [
-        data : {
+        data: {
             Id: string;
             securityCode: string;
             name: string;
@@ -17,7 +17,7 @@ export interface IUsers {
 
 export interface ICameras {
     cameras: [
-        data : {
+        data: {
             cameraId: string;
             cameraName: string;
             cameraDestination: string;
@@ -29,7 +29,7 @@ export interface ICameras {
 
 export interface ILocations {
     locations: [
-        data : {
+        data: {
             locationId: string;
             locationName: string;
         }
@@ -37,42 +37,40 @@ export interface ILocations {
     token: string | undefined;
 }
 export interface IRecordsDetail {
-    details: [
-        data: {
-            cameraId: string;
-            cameraDestination: string;
-            ratingResult: number;
-            recordId: string;
-            userRatingPercent: number;
-            predictedPercent: number;
-            status: string;
-            videoRecord: {
-                videoUrl: string;
-            };
-            imageRecord: {
-                videoUrl: string;
-            };
-            userRatings: [
-                {
-                    userId: string;
-                    rating: number;
-                }
-            ];
-            userVoting: [
-                {
-                    userId: string;
-                    voteLevel: number;
-                    voteType: string;
-                }
-            ]
-        }
-    ];
+    data: {
+        cameraId: string;
+        cameraDestination: string;
+        ratingResult: number;
+        recordId: string;
+        userRatingPercent: number;
+        predictedPercent: number;
+        status: string;
+        videoRecord: {
+            videoUrl: string;
+        };
+        imageRecord: {
+            videoUrl: string;
+        };
+        userRatings: [
+            {
+                userId: string;
+                rating: number;
+            }
+        ];
+        userVoting: [
+            {
+                userId: string;
+                voteLevel: number;
+                voteType: string;
+            }
+        ]
+    };
     token: string | undefined;
 }
 
 export interface IRecords {
     records: [
-        data : {
+        data: {
             id: string;
             status: string;
             recordTime: string;

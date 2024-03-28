@@ -2,16 +2,14 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { getRecords } from '@/app/lib';
 import { IRecords } from '@/app/types';
 import { getServerSession } from 'next-auth';
-import React from 'react'
-// import { RecordDetails } from './[recordId]/components';
-import { RecordDetails } from './components';
+import React from 'react';
+import RecordRow from './components/RecordRow';
 
 export default async function Record(token: string | undefined) {
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
   const listRecords: IRecords = await getRecords(token);
-  // console.log(listRecords.results)
-  
+
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold my-4">Record List</h1>
@@ -23,24 +21,24 @@ export default async function Record(token: string | undefined) {
             <th className="px-4 py-2">User Rating Percent</th>
             <th className="px-4 py-2">Predicted Percent</th>
             <th className="px-4 py-2">Created Date</th>
+            <th className="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           {listRecords.results.map((record) => (
-            <tr key={record.id} className="bg-gray-100 ">
-              {/* {console.log(record.id)} */}
-              <td className="border px-4 py-2">{record.status}</td>
-              <td className="border px-4 py-2">{record.recordTime}</td>
-              <td className="border px-4 py-2">{record.userRatingPercent}</td>
-              <td className="border px-4 py-2">{record.predictedPercent}</td>
-              <td className="border px-4 py-2">{record.createdDate}</td>
-              <td className="border px-4 py-2">
-                <RecordDetails recordId={record.id} token={token}/>
-              </td>
-            </tr>
+            <RecordRow
+              key={record.id}
+              recordId={record.id}
+              status={record.status}
+              recordTime={record.recordTime}
+              userRatingPercent={record.userRatingPercent}
+              predictedPercent={record.predictedPercent}
+              createdDate={record.createdDate}
+              token={token}
+            />
           ))}
         </tbody>
       </table>
     </div>
-  )
+  );
 }
