@@ -36,6 +36,39 @@ export interface ILocations {
     ];
     token: string | undefined;
 }
+export interface IRecordsDetail {
+    details: [
+        data: {
+            cameraId: string;
+            cameraDestination: string;
+            ratingResult: number;
+            recordId: string;
+            userRatingPercent: number;
+            predictedPercent: number;
+            status: string;
+            videoRecord: {
+                videoUrl: string;
+            };
+            imageRecord: {
+                videoUrl: string;
+            };
+            userRatings: [
+                {
+                    userId: string;
+                    rating: number;
+                }
+            ];
+            userVoting: [
+                {
+                    userId: string;
+                    voteLevel: number;
+                    voteType: string;
+                }
+            ]
+        }
+    ];
+    token: string | undefined;
+}
 
 export interface IRecords {
     records: [

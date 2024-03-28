@@ -49,14 +49,15 @@ export async function getRecords(token:string | undefined) {
     return res.json();
 }
 
-export async function getDetailsRecords(token:string | undefined, recordId: string) {
+export async function getRecordsDetails(token:string | undefined, recordId: string) {
+    console.log(`${process.env.API_URL}/Record/${recordId}`);
     const res = await fetch(`${process.env.API_URL}/Record/${recordId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
     if (!res.ok) {
-        throw new Error("Failed to fetch record details");
+        throw new Error("Mày Non");
     }
     return res.json();
 }

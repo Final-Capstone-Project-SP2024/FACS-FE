@@ -1,2 +1,3 @@
+import RecordDetails from "./RecordDetails";
 import RecordRow from "./RecordRow";
-export { RecordRow };
+export { RecordRow, RecordDetails };
