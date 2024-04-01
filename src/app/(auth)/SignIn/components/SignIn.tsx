@@ -2,7 +2,7 @@
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import React, { useState } from 'react'
-import login from '../../../../public/login-img.jpeg';
+import login from '../../../../../public/login-img.jpeg';
 
 export default function SignIn() {
     const [securityCode, setSecurityCode] = useState<string>("");
@@ -19,7 +19,7 @@ export default function SignIn() {
                 redirect: true,
                 callbackUrl: "/",
             });
-            console.log(res);
+            // console.log(res);
 
         } catch (error) {
             console.log(error);

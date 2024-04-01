@@ -1,3 +1,4 @@
 import AddCamera from "./AddCamera";
 import UpdateCamera from "./UpdateCamera";
-export { AddCamera, UpdateCamera };
+import GetCamera from "./GetCamera";
+export { AddCamera, UpdateCamera, GetCamera };

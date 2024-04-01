@@ -1,12 +1,13 @@
-import React from "react";
-import SignIn from "./SignIn";
+import React from 'react'
+import SignIn from './components/SignIn'
+import SignInLayout from '../layout'
 
-function page() {
+export default function page() {
   return (
-    <div className="flex items-center w-full">
-      <SignIn />
-    </div>
+    <SignInLayout>
+      <div className="flex items-center w-full">
+        <SignIn />
+      </div>
+    </SignInLayout>
   )
 }
-
-export default page;
