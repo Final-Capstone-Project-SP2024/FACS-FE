@@ -3,7 +3,7 @@ import { getRecords } from '@/app/lib';
 import { IRecords } from '@/app/types';
 import { getServerSession } from 'next-auth';
 import React from 'react';
-import RecordRow from './components/RecordRow';
+import RecordRow from './components/RecordTable';
 
 export default async function Record(token: string | undefined) {
   const session = await getServerSession(authOptions);
