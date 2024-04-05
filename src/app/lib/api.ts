@@ -1,7 +1,8 @@
 import { ICameras, ILocations, IRecords, IRecordsDetail, IUsers } from "../types";
 
-export async function getUsers(token: string | undefined): Promise<IUsers> {
-    const res = await fetch(`${process.env.API_URL}/User`, {
+export async function getUsers(token: string | undefined, page : number = 1, pageSize : number = 10): Promise<IUsers> {
+    const res = await fetch(`${process.env.API_URL}/User?Page=${page}&PageSize=${pageSize}`, {
+    // const res = await fetch(`${process.env.API_URL}/User`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

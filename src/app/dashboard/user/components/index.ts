@@ -1,3 +1,5 @@
 import UpdateUser from "./UpdateUser";
 import AddUser from './AddUser';
-export {AddUser , UpdateUser};
+import UserTable from "./UserTable";
+import Paginaton from './Pagination';
+export {AddUser , UpdateUser, UserTable, Paginaton};

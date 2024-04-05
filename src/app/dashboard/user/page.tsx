@@ -3,10 +3,11 @@ import { getUsers } from '@/app/lib';
 import { IUsers } from '@/app/types';
 import { getServerSession } from 'next-auth';
 import React from 'react';
-import { AddUser, UpdateUser } from './components';
+import { AddUser, UpdateUser, UserTable } from './components';
+import Pagination from './components/Pagination';
 
 type SearchParamsProps = {
-  searchParams: { page: string };
+  searchParams: { Page: string };
 };
 
 export default async function User({ searchParams }: SearchParamsProps, token: string | undefined) {
@@ -16,11 +17,12 @@ export default async function User({ searchParams }: SearchParamsProps, token: s
   const listUsers: IUsers = await getUsers(token);
   // console.log(listUsers?.data.results);
   const user = listUsers?.data.results;
+  console.log(searchParams.Page);
 
   return (
     <div>
       <div className="mb-4">
-        <AddUser token={token}/>
+        <AddUser token={token} />
       </div>
       <table>
         <thead>
@@ -36,20 +38,11 @@ export default async function User({ searchParams }: SearchParamsProps, token: s
         </thead>
         <tbody>
           {user.map((user) => (
-            <tr key={user.id}>
-              <td className="border px-4 py-2">{user.securityCode}</td>
-              <td className="border px-4 py-2">{user.email}</td>
-              <td className="border px-4 py-2">{user.name}</td>
-              <td className="border px-4 py-2">{user.phone}</td>
-              <td className="border px-4 py-2">{user.role.roleName}</td>
-              <td className="border px-4 py-2">{user.status}</td>
-              <td className="border px-4 py-2">
-                <UpdateUser userId={user.id} token={token}/>
-              </td> 
-            </tr>
+            <UserTable id={user.id} securityCode={user.securityCode} email={user.email} name={user.name} phone={user.phone} role={user.role} status={user.status} token={token} />
           ))}
         </tbody>
       </table>
+      <Pagination totalItem={listUsers?.data.totalNumberOfRecords} currentPage={parseInt(searchParams.Page)} renderPageLink={(page) => `/dashboard/user?Page=${page}`} />
     </div>
   );
 }
