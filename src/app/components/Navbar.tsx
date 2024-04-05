@@ -11,7 +11,7 @@ export default async function Navbar() {
     <header className="w-full">
       <div>
         <nav className="shadow">
-          <div className="flex justify-between items-center py-2 px-10 container mx-auto">
+          <div className="flex justify-between items-center py-2 px-5 container mx-auto">
             <div>
               <a href="/" className="text-2xl font-bold bg-gradient-to-tr from-red-500 to-yellow-600 bg-clip-text text-transparent hover:cursor-pointer">Fire Alarm Camera Solution</a>
             </div>
@@ -26,11 +26,11 @@ export default async function Navbar() {
                   {session?.user ? (
                     <div className="md:flex items-center hidden space-x-4 ml-8 lg:ml-12">
                       <h1 className="text-text-gray-600  py-2 hover:cursor-pointer hover:text-indigo-600">Welcome back, {session.user.data.name}!</h1>
-                      <SignOut/>
+                      <SignOut />
                     </div>
                   ) : (
                     <div className="md:flex items-center hidden space-x-4 ml-8 lg:ml-12">
-                      <Link href="/SignIn" className="text-text-gray-600  py-2 hover:cursor-pointer hover:text-indigo-600">Sign In</Link>
+                      <Link href="/SignIn" className="bg-amber-700 text-white hover:cursor-pointer hover:bg-red-600 py-2 px-3 font-bold rounded">Sign In</Link>
                     </div>
                   )}
                 </div>
