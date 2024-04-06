@@ -25,9 +25,20 @@ type User = {
     token: string | undefined;
 };
 
-const handleGetUser = async (token: string | undefined, page: number) => {
+const handleGetUser = async (token: string | undefined, page: number, filters: { name?: string; roleName?: string; status?: string }) => {
+    const { name, roleName, status } = filters;
     var url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/User?Page=${page}&PageSize=10`;
 
+    if (status) {
+        url += `&Status=${encodeURIComponent(status)}`;
+    }
+    if (name) {
+        url += `&Name=${encodeURIComponent(name)}`;
+    }
+    if (roleName) {
+        url += `&RoleName=${encodeURIComponent(roleName)}`;
+    }
+    console.log(`URL: ${url}`); // Debug line
     try {
         const res = await fetch(url, {
             method: 'GET',
@@ -59,74 +70,100 @@ export default function UserTable({ token }: { token: string | undefined }) {
     const [users, setUsers] = useState<User[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const [filters, setFilters] = useState<{ name?: string; roleName?: string; status?: string }>({
+        name: '',
+        roleName: '',
+        status: '',
+    });
 
     useEffect(() => {
         const fetchUsers = async () => {
             setLoading(true);
-            const { users: fetchedUsers, totalPages: newTotalPages } = await handleGetUser(token, currentPage);
+            const { users: fetchedUsers, totalPages: newTotalPages } = await handleGetUser(token, currentPage, filters);
             setUsers(fetchedUsers);
             setTotalPages(newTotalPages);
             setLoading(false);
-            console.log(`Total Pages: ${newTotalPages}`); // Add this line to debug
         };
 
         fetchUsers();
-    }, [token, currentPage]);
+    }, [token, currentPage, filters]);
 
-    const goToNextPage = () => {
-        if (typeof totalPages === 'number' && !isNaN(totalPages)) {
-            setCurrentPage(current => Math.min(current + 1, totalPages));
-        }
-    };
-    const goToPreviousPage = () => setCurrentPage(current => Math.max(1, current - 1));
+    const filterUI = (
+        <div>
+            <input
+                type="text"
+                placeholder="Filter by name"
+                value={filters.name}
+                onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            />
+            <input
+                type="text"
+                placeholder="Filter by role"
+                value={filters.roleName}
+                onChange={(e) => setFilters({ ...filters, roleName: e.target.value })}
+            />
+            <input
+                type="text"
+                placeholder="Filter by status"
+                value={filters.status}
+                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+            />
+            {/* <button onClick={() => { setUsers([]); setLoading(true); setCurrentPage(1); }}>Apply Filters</button> */}
+        </div>
+    );
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (!users || users.length === 0) {
-        return <div>No users found</div>;
-    }
-    console.log(`Current Page: ${currentPage}, Total Pages: ${totalPages}`);
+    const tableHeader = (
+        <thead>
+            <tr>
+                <th className="border px-4 py-2">Security Code</th>
+                <th className="border px-4 py-2">Email</th>
+                <th className="border px-4 py-2">Name</th>
+                <th className="border px-4 py-2">Phone</th>
+                <th className="border px-4 py-2">Role</th>
+                <th className="border px-4 py-2">Status</th>
+                <th className="border px-4 py-2">Update</th>
+            </tr>
+        </thead>
+    );
 
     return (
         <>
-            <table>
-                <thead>
-                    <tr>
-                        <th className="border px-4 py-2">Security Code</th>
-                        <th className="border px-4 py-2">Email</th>
-                        <th className="border px-4 py-2">Name</th>
-                        <th className="border px-4 py-2">Phone</th>
-                        <th className="border px-4 py-2">Role</th>
-                        <th className="border px-4 py-2">Status</th>
-                        <th className="border px-4 py-2">Update</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map((user) => (
-                        <tr key={user.id}>
-                            <td className="border px-4 py-2">{user.securityCode}</td>
-                            <td className="border px-4 py-2">{user.email}</td>
-                            <td className="border px-4 py-2">{user.name}</td>
-                            <td className="border px-4 py-2">{user.phone}</td>
-                            <td className="border px-4 py-2">{user.role.roleName}</td>
-                            <td className="border px-4 py-2">{user.status}</td>
-                            <td className="border px-4 py-2">
-                                <UpdateUser userId={user.id} token={token} />
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {filterUI}
+            {loading ? (
+                <div>Loading...</div>
+            ) : users.length > 0 ? (
+                <table>
+                    {tableHeader}
+                    <tbody>
+                        {users.map((user) => (
+                            <tr key={user.id}>
+                                <td className="border px-4 py-2">{user.securityCode}</td>
+                                <td className="border px-4 py-2">{user.email}</td>
+                                <td className="border px-4 py-2">{user.name}</td>
+                                <td className="border px-4 py-2">{user.phone}</td>
+                                <td className="border px-4 py-2">{user.role.roleName}</td>
+                                <td className="border px-4 py-2">{user.status}</td>
+                                <td className="border px-4 py-2">
+                                    <UpdateUser userId={user.id} token={token} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <>
+                    <table>{tableHeader}</table>
+                    <div>No users found</div>
+                </>
+            )}
             <div>
-                <button onClick={goToPreviousPage} disabled={currentPage === 1}>
+                <button onClick={() => setCurrentPage((currentPage) => Math.max(1, currentPage - 1))} disabled={currentPage === 1}>
                     Previous
                 </button>
                 <span>
                     Page {currentPage} of {totalPages}
                 </span>
-                <button onClick={goToNextPage} disabled={currentPage >= totalPages}>
+                <button onClick={() => setCurrentPage((currentPage) => Math.min(currentPage + 1, totalPages))} disabled={currentPage >= totalPages}>
                     Next
                 </button>
             </div>

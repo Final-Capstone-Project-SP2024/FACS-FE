@@ -3,6 +3,7 @@ import { getLocation } from '@/app/lib';
 import { ILocations } from '@/app/types';
 import { getServerSession } from 'next-auth';
 import React from 'react'
+import { AddLocation } from './components';
 
 export default async function Location(token : string | undefined) {
   const session = await getServerSession(authOptions);
@@ -12,6 +13,7 @@ export default async function Location(token : string | undefined) {
   console.log(location);
   return (
     <div>
+      <AddLocation token={token} />
       <table>
         <thead>
           <tr>
