@@ -47,8 +47,6 @@ export default function AddCamera({ token }: { token: string | undefined}) {
         }),
       });
       if (response.ok) {
-        // const updatedCameraList = await getCamera(token);
-        // console.log(updatedCameraList);
         console.log('Camera added successfully');
         setShowModal(false);
       }

@@ -1,6 +1,6 @@
 import { usePagination } from '@/app/hook';
 import Link from 'next/link';
-import React from 'react'
+import React from 'react';
 
 export type PaginationProps = {
     totalItem: number;
