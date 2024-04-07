@@ -14,18 +14,23 @@ export default async function Record(token: string | undefined) {
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold my-4">Record List</h1>
       <table className="table-auto w-full">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Record Time</th>
-            <th className="px-4 py-2">User Rating Percent</th>
-            <th className="px-4 py-2">Predicted Percent</th>
-            <th className="px-4 py-2">Created Date</th>
-            <th className="px-4 py-2">Actions</th>
-          </tr>
-        </thead>
+      <thead>
+        <tr>
+          <th className="px-4 py-2">Status</th>
+          <th className="px-4 py-2">Record Time</th>
+          <th className="px-4 py-2">User Rating Percent</th>
+          <th className="px-4 py-2">Predicted Percent</th>
+          <th className="px-4 py-2">Created Date</th>
+          <th className="px-4 py-2">Record Type ID</th>
+          <th className="px-4 py-2">Record Type Name</th>
+          <th className="px-4 py-2">User Ratings</th>
+          <th className="px-4 py-2">User Votings</th>
+          <th className="px-4 py-2">Notification Logs</th>
+          <th className="px-4 py-2">Actions</th>
+        </tr>
+      </thead>
         <tbody>
-          {listRecords.results.map((record) => (
+          {/* {listRecords.results.map((record) => (
             <RecordRow
               key={record.id}
               recordId={record.id}
@@ -36,7 +41,8 @@ export default async function Record(token: string | undefined) {
               createdDate={record.createdDate}
               token={token}
             />
-          ))}
+          ))} */}
+          <RecordRow token={token}/>
         </tbody>
       </table>
     </div>
