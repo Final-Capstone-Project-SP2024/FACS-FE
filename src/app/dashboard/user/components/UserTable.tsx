@@ -96,19 +96,22 @@ export default function UserTable({ token }: { token: string | undefined }) {
                 value={filters.name}
                 onChange={(e) => setFilters({ ...filters, name: e.target.value })}
             />
-            <input
-                type="text"
-                placeholder="Filter by role"
+            <select
                 value={filters.roleName}
                 onChange={(e) => setFilters({ ...filters, roleName: e.target.value })}
-            />
-            <input
-                type="text"
-                placeholder="Filter by status"
+            >
+                <option value="">Select Role</option>
+                <option value="Manager">Manager</option>
+                <option value="User">User</option>
+            </select>
+            <select
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-            />
-            {/* <button onClick={() => { setUsers([]); setLoading(true); setCurrentPage(1); }}>Apply Filters</button> */}
+            >
+                <option value="">Select Status</option>
+                <option value="actived">Active</option>
+                <option value="inactived">Inactive</option>
+            </select>
         </div>
     );
 

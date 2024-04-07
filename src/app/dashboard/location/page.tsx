@@ -3,7 +3,7 @@ import { getLocation } from '@/app/lib';
 import { ILocations } from '@/app/types';
 import { getServerSession } from 'next-auth';
 import React from 'react'
-import { AddLocation } from './components';
+import { AddLocation, GetLocation } from './components';
 
 export default async function Location(token : string | undefined) {
   const session = await getServerSession(authOptions);
@@ -21,11 +21,12 @@ export default async function Location(token : string | undefined) {
           </tr>
         </thead>
         <tbody>
-          {location.map((location) => (
+          <GetLocation token={token} />
+          {/* {location.map((location) => (
             <tr key={location.id}>
               <td className="border px-4 py-2">{location.locationName}</td>
             </tr>
-          ))}
+          ))} */}
         </tbody>
       </table>
     </div>

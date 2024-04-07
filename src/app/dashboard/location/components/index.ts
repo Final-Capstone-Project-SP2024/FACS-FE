@@ -1,3 +1,4 @@
 import AddLocation from "./AddLocation";
 import UpdateLocation from "./UpdateLocation";
-export { AddLocation, UpdateLocation };
+import GetLocation from "./GetLocation";
+export { AddLocation, UpdateLocation, GetLocation };
