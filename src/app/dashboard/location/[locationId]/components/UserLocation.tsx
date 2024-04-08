@@ -1,5 +1,7 @@
 'use client'
+// UserLocation component
 import React, { useEffect, useState } from 'react';
+import AddUserToLocation from './AddUserToLocation';
 
 const handleGetUserLocation = async (locationId: string, token: string | undefined) => {
     const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}`, {
@@ -26,19 +28,26 @@ export default function UserLocation({ locationId, token }: { locationId: string
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const fetchUserLocations = async () => {
         setLoading(true);
         setError(null);
-        handleGetUserLocation(locationId, token)
-            .then((data) => {
-                setLocations(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                setError(error.message);
-                setLoading(false);
-            });
+        try {
+            const data = await handleGetUserLocation(locationId, token);
+            setLocations(data);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserLocations();
     }, [locationId, token]);
+
+    const updateUserLocations = () => {
+        fetchUserLocations();
+    };
 
     if (loading) return <div>Loading user locations...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -46,6 +55,7 @@ export default function UserLocation({ locationId, token }: { locationId: string
     return (
         <div>
             <h2>User Locations</h2>
+            <AddUserToLocation locationId={locationId} token={token} updateUserLocations={updateUserLocations} />
             <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                     <tr>
