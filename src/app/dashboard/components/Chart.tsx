@@ -1,92 +1,95 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+// Registering the necessary components for Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const fetchData = async (url: string, token: string | undefined) => {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.ok) {
+    return await res.json();
+  } else {
+    throw new Error('Failed to fetch data');
+  }
+};
 
 export default function Chart({ token }: { token: string | undefined }) {
   const [chartData, setChartData] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false); // State to track loading state
 
-  const handleGetRecord = async () => {
-    setLoading(true); // Set loading state to true while fetching data
-
-    const chartLabels: string[] = [];
-    const totalNumberOfRecords: number[] = [];
-
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dateString = date.toISOString().split('T')[0];
-
-      const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=1&PageSize=10000&Status=InFinish&FromDate=${dateString}&ToDate=${dateString}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (res.ok) {
-        const apiResponse = await res.json();
-        console.log(apiResponse)
-        chartLabels.push(dateString);
-        totalNumberOfRecords.push(apiResponse.totalNumberOfRecords);
-      } else {
-        console.error(`Failed to fetch records for ${dateString}`);
+  const updateChartData = async (interval: string) => {
+    try {
+      const data = await fetchData(`https://firealarmcamerasolution.azurewebsites.net/${interval}`, token);
+      console.log(data);
+  
+      let labels;
+      if (interval === 'day') {
+        labels = data.map((item: any) => item.Date);
+      } else if (interval === 'month') {
+        labels = data.map((item: any) => item.Month);
+      } else if (interval === 'year') {
+        labels = data.map((item: any) => item.Year);
       }
+  
+      const chartData = {
+        labels,
+        datasets: [
+          {
+            label: `Incident count by ${interval}`,
+            data: data.map((item: any) => item.Count),
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }
+        ]
+      };
+      setChartData(chartData);
+    } catch (error) {
+      console.error(`Error fetching data by ${interval}:`, error);
     }
-
-    setChartData({
-      labels: chartLabels,
-      datasets: [
-        {
-          label: 'Total Number of Records',
-          data: totalNumberOfRecords,
-          fill: false,
-          borderColor: 'rgba(75,192,192,1)',
-        }
-      ],
-    });
-
-    setLoading(false); // Set loading state to false after fetching data
   };
 
   useEffect(() => {
-    handleGetRecord(); // Fetch data when component mounts
-  }, []);
-
-  const options = {
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Date'
-        }
-      },
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Total Number of Records'
-        }
-      }
-    },
-    plugins: {
-      legend: {
-        display: true
-      }
-    }
-  };
+    updateChartData('day');
+  }, [token]);
 
   return (
-    <div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : chartData ? (
-        <div>
-          {/* <Line data={chartData} options={options} /> */}
+    <div className="w-full h-96 bg-white p-4 rounded-md shadow-md">
+      <div className="mb-4">
+        <button onClick={() => updateChartData('day')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Day</button>
+        <button onClick={() => updateChartData('month')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Month</button>
+        <button onClick={() => updateChartData('year')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Year</button>
+      </div>
+      {chartData ? (
+        <div className="w-full h-full">
+          <Line data={chartData} />
         </div>
       ) : (
-        <p>No data available</p>
+        <p>Loading chart data...</p>
       )}
     </div>
   );
