@@ -12,7 +12,6 @@ type SearchParamsProps = {
 
 export default async function User({ searchParams }: SearchParamsProps, token: string | undefined) {
   const session = await getServerSession(authOptions);
-  // console.log(session?.user.data.accessToken);
   token = session?.user.data.accessToken;
   // const listUsers: IUsers = await getUsers(token);
   // console.log(listUsers?.data.results);

@@ -49,7 +49,7 @@ export interface IRecordsDetail {
             videoUrl: string;
         };
         imageRecord: {
-            videoUrl: string;
+            imageUrl: string;
         };
         userRatings: [
             {

@@ -9,15 +9,21 @@ export default async function page(token: string | undefined) {
   token = session?.user.data.accessToken;
 
   return (
-    <div className='flex flex-col gap-5 mt-5'>
-      <div className='flex flex-wrap gap-5 justify-between pl-3'>
+    <div className='flex flex-col justify-between px-3'>
+      <div className='flex flex-wrap gap-5'>
         <Card input={"user"} numberAdd={"1000"} type={"Total User"} />
         <Card input={"location"} numberAdd={"1000"} type={"Location"} />
         <Card input={"camera"} numberAdd={"Camera Name"} type={"Fire-Detect Camera"} />
       </div>
-      <div className='w-full pl-3'>
-        <Chart token={token} />
+      <div className='flex flex-wrap gap-2'>
+        <div className='flex-1'>
+          <Chart token={token} />
+        </div>
+        <div className='flex-1'>
+          <Chart token={token} />
+        </div>
       </div>
+
     </div>
   );
 }

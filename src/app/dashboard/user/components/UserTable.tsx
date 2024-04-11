@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import UpdateUser from './UpdateUser';
 
@@ -39,7 +39,7 @@ const handleGetUser = async (token: string | undefined, page: number, filters: {
     if (roleName) {
         url += `&RoleName=${encodeURIComponent(roleName)}`;
     }
-    console.log(`URL: ${url}`); // Debug line
+
     try {
         const res = await fetch(url, {
             method: 'GET',
@@ -48,13 +48,12 @@ const handleGetUser = async (token: string | undefined, page: number, filters: {
                 Authorization: `Bearer ${token}`,
             },
         });
+
         if (res.ok) {
             const apiResponse: ApiResponse = await res.json();
-            console.log('Users fetched successfully');
-            console.log(apiResponse);
             return {
                 users: apiResponse.data.results,
-                totalPages: apiResponse.data.totalNumberOfPages, // Ensure this is correctly parsed
+                totalPages: apiResponse.data.totalNumberOfPages,
             };
         } else {
             console.error('Failed to fetch users');
@@ -90,16 +89,18 @@ export default function UserTable({ token }: { token: string | undefined }) {
     }, [token, currentPage, filters]);
 
     const filterUI = (
-        <div>
+        <div className="flex flex-wrap space-x-4 mb-4">
             <input
                 type="text"
                 placeholder="Filter by name"
                 value={filters.name}
                 onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+                className="px-3 py-2 border border-gray-300 rounded-lg"
             />
             <select
                 value={filters.roleName}
                 onChange={(e) => setFilters({ ...filters, roleName: e.target.value })}
+                className="px-3 py-2 border border-gray-300 rounded-lg"
             >
                 <option value="">Select Role</option>
                 <option value="Manager">Manager</option>
@@ -108,6 +109,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <select
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                className="px-3 py-2 border border-gray-300 rounded-lg"
             >
                 <option value="">Select Status</option>
                 <option value="actived">Active</option>
@@ -118,38 +120,60 @@ export default function UserTable({ token }: { token: string | undefined }) {
 
     const tableHeader = (
         <thead>
-            <tr>
-                <th className="border px-4 py-2">Security Code</th>
-                <th className="border px-4 py-2">Email</th>
-                <th className="border px-4 py-2">Name</th>
-                <th className="border px-4 py-2">Phone</th>
-                <th className="border px-4 py-2">Role</th>
-                <th className="border px-4 py-2">Status</th>
-                <th className="border px-4 py-2">Location</th>
-                <th className="border px-4 py-2">Update</th>
+            <tr className="bg-gray-100">
+                <th className="px-4 py-2 border">Security Code</th>
+                <th className="px-4 py-2 border">Email</th>
+                <th className="px-4 py-2 border">Name</th>
+                <th className="px-4 py-2 border">Phone</th>
+                <th className="px-4 py-2 border">Role</th>
+                <th className="px-4 py-2 border">Status</th>
+                <th className="px-4 py-2 border">Location</th>
+                <th className="px-4 py-2 border">Update</th>
             </tr>
         </thead>
+    );
+
+    const paginationControls = (
+        <div className="flex items-center mt-4 space-x-4">
+            <button
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300"
+            >
+                Previous
+            </button>
+            <span>
+                Page {currentPage} of {totalPages}
+            </span>
+            <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage >= totalPages}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300"
+            >
+                Next
+            </button>
+        </div>
     );
 
     return (
         <>
             {filterUI}
             {loading ? (
-                <div>Loading...</div>
+                <div className="text-center text-gray-500">Loading...</div>
             ) : users.length > 0 ? (
-                <table>
+                <table className="w-full border-collapse">
                     {tableHeader}
                     <tbody>
                         {users.map((user) => (
-                            <tr key={user.id}>
-                                <td className="border px-4 py-2">{user.securityCode}</td>
-                                <td className="border px-4 py-2">{user.email}</td>
-                                <td className="border px-4 py-2">{user.name}</td>
-                                <td className="border px-4 py-2">{user.phone}</td>
-                                <td className="border px-4 py-2">{user.role.roleName}</td>
-                                <td className="border px-4 py-2">{user.status}</td>
-                                <td className="border px-4 py-2">{user.locationName}</td>
-                                <td className="border px-4 py-2">
+                            <tr key={user.id} className="border-b">
+                                <td className="px-4 py-2 border">{user.securityCode}</td>
+                                <td className="px-4 py-2 border">{user.email}</td>
+                                <td className="px-4 py-2 border">{user.name}</td>
+                                <td className="px-4 py-2 border">{user.phone}</td>
+                                <td className="px-4 py-2 border">{user.role.roleName}</td>
+                                <td className="px-4 py-2 border">{user.status}</td>
+                                <td className="px-4 py-2 border">{user.locationName}</td>
+                                <td className="px-4 py-2 border">
                                     <UpdateUser userId={user.id} token={token} />
                                 </td>
                             </tr>
@@ -157,22 +181,9 @@ export default function UserTable({ token }: { token: string | undefined }) {
                     </tbody>
                 </table>
             ) : (
-                <>
-                    <table>{tableHeader}</table>
-                    <div>No users found</div>
-                </>
+                <div className="text-center text-gray-500">No users found</div>
             )}
-            <div>
-                <button onClick={() => setCurrentPage((currentPage) => Math.max(1, currentPage - 1))} disabled={currentPage === 1}>
-                    Previous
-                </button>
-                <span>
-                    Page {currentPage} of {totalPages}
-                </span>
-                <button onClick={() => setCurrentPage((currentPage) => Math.min(currentPage + 1, totalPages))} disabled={currentPage >= totalPages}>
-                    Next
-                </button>
-            </div>
+            {paginationControls}
         </>
     );
 }

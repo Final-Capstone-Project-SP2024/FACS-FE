@@ -30,7 +30,7 @@ export default async function RootLayout({
             <Navbar />
             <div className='flex'>
               {session && session.user ? <Sidebar /> : null}
-              <main>{children}</main>
+              <main className='flex-grow w-full'>{children}</main>
             </div>
           </AuthProvider>
         </div>

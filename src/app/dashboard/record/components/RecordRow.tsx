@@ -114,9 +114,10 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         className="px-2 py-1 border border-gray-300 rounded"
       >
         <option value="">Select Status</option>
+        <option value="InAction">In Action</option>
+        <option value="InAlarm">In Alarm</option>
         <option value="InFinish">In Finish</option>
         <option value="InVote">In Vote</option>
-        <option value="InAction">In Action</option>
       </select>
     </div>
   );

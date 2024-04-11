@@ -27,7 +27,7 @@ export default async function page({ params }: { params: { recordId: string } },
           <p>Video URL: {recordPromises.data.videoRecord.videoUrl}</p>
         )}
         {recordPromises.data.imageRecord && (
-          <p>Image URL: {recordPromises.data.imageRecord.videoUrl}</p>
+          <p>Image URL: {recordPromises.data.imageRecord.imageUrl}</p>
         )}
         <p>User Ratings:</p>
         <ul>
