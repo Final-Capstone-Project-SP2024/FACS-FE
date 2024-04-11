@@ -4,7 +4,7 @@ import { MdSupervisedUserCircle } from 'react-icons/md';
 import { CiCamera } from "react-icons/ci";
 import { MdLocationOn } from "react-icons/md";
 
-export default function Card({ input, type, numberAdd }) {
+export default function Card({ input, type, numberAdd }: { input: string, type: string, numberAdd: string }) {
   const typeIconMap = {
     user: <MdSupervisedUserCircle size={24} />,
     camera: <CiCamera size={24} />,

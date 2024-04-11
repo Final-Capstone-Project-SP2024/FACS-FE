@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
@@ -34,78 +34,162 @@ type RecordProps = {
   token: string | undefined;
 };
 
+const handleGetRecords = async (
+  token: string | undefined,
+  page: number,
+  filters: { status?: string; fromDate?: string; toDate?: string }
+) => {
+  var url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=${page}&PageSize=10`;
+
+  if (filters.status) {
+    url += `&Status=${encodeURIComponent(filters.status)}`;
+  }
+  if (filters.fromDate) {
+    url += `&FromDate=${encodeURIComponent(filters.fromDate)}`;
+  }
+  if (filters.toDate) {
+    url += `&ToDate=${encodeURIComponent(filters.toDate)}`;
+  }
+  console.log(`URL: ${url}`); // Debug line
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      const apiResponse = await res.json();
+      return {
+        records: apiResponse.results,
+        totalPages: apiResponse.totalNumberOfPages,
+      };
+    } else {
+      console.error('Failed to fetch records');
+      return { records: [], totalPages: 0 };
+    }
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    return { records: [], totalPages: 0 };
+  }
+};
+
 const RecordRow = ({ token }: { token: string | undefined }) => {
   const [records, setRecords] = useState<RecordProps[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [filters, setFilters] = useState<{ status?: string; fromDate?: string; toDate?: string }>({});
 
   useEffect(() => {
     const fetchRecords = async () => {
-      try {
-        const res = await fetch('https://firealarmcamerasolution.azurewebsites.net/api/v1/Record', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (res.ok) {
-          const apiResponse = await res.json();
-          console.log('Records fetched successfully');
-          console.log(apiResponse.results);
-          setRecords(apiResponse.results);
-        } else {
-          console.error('Failed to fetch records');
-        }
-      } catch (error) {
-        console.error('Error fetching records:', error);
-      }
+      const { records: fetchedRecords, totalPages: newTotalPages } = await handleGetRecords(token, currentPage, filters);
+      setRecords(fetchedRecords);
+      setTotalPages(newTotalPages);
     };
 
     fetchRecords();
-  }, [token]);
+  }, [token, currentPage, filters]);
+
+  const filterUI = (
+    <div className="flex space-x-4 mb-4">
+      <input
+        type="date"
+        placeholder="From Date"
+        value={filters.fromDate}
+        onChange={(e) => setFilters({ ...filters, fromDate: e.target.value })}
+        className="px-2 py-1 border border-gray-300 rounded"
+      />
+      <input
+        type="date"
+        placeholder="To Date"
+        value={filters.toDate}
+        onChange={(e) => setFilters({ ...filters, toDate: e.target.value })}
+        className="px-2 py-1 border border-gray-300 rounded"
+      />
+      <select
+        value={filters.status}
+        onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+        className="px-2 py-1 border border-gray-300 rounded"
+      >
+        <option value="">Select Status</option>
+        <option value="InFinish">In Finish</option>
+        <option value="InVote">In Vote</option>
+        <option value="InAction">In Action</option>
+      </select>
+    </div>
+  );
 
   return (
     <>
-      {records.map((record, index) => (
-        <tr key={index} className="border-b border-gray-200">
-          <td className="px-4 py-2">{record.status}</td>
-          <td className="px-4 py-2">{record.recordTime}</td>
-          <td className="px-4 py-2">{record.userRatingPercent}</td>
-          <td className="px-4 py-2">{record.predictedPercent}</td>
-          <td className="px-4 py-2">{record.createdDate}</td>
-          <td className="px-4 py-2">{record.recordType.recordTypeId}</td>
-          <td className="px-4 py-2">{record.recordType.recordTypeName}</td>
-          <td className="px-4 py-2">
-            {record.userRatings.map((rating, index) => (
-              <div key={index}>
-                <p>User ID: {rating.userId}</p>
-                <p>Rating: {rating.rating}</p>
-              </div>
-            ))}
-          </td>
-          <td className="px-4 py-2">
-            {record.userVotings.map((voting, index) => (
-              <div key={index}>
-                <p>User ID: {voting.userId}</p>
-                <p>Vote Level: {voting.voteLevel}</p>
-                <p>Vote Type: {voting.voteType.actionName}</p>
-              </div>
-            ))}
-          </td>
-          <td className="px-4 py-2">
-            {record.notificationLogs.map((log, index) => (
-              <div key={index}>
-                <p>Count: {log.count}</p>
-                <p>Notification Type: {log.notificationType.name}</p>
-              </div>
-            ))}
-          </td>
-          <td className="px-4 py-2">
-            <Link href="/dashboard/record/[recordId]" as={`/dashboard/record/${record.id}`}>
-              View Details
-            </Link>
-          </td>
-        </tr>
-      ))}
+      {filterUI}
+      <table className="table-auto w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-100 border-b border-gray-200">
+            <th className="px-4 py-2">Status</th>
+            <th className="px-4 py-2">Record Time</th>
+            <th className="px-4 py-2">User Rating(%)</th>
+            <th className="px-4 py-2">Predicted(%)</th>
+            <th className="px-4 py-2">Record Type Name</th>
+            <th className="px-4 py-2">Most Ratings</th>
+            <th className="px-4 py-2">Most Votings</th>
+            <th className="px-4 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {records.map((record, index) => (
+            <tr key={index} className="border-b border-gray-200">
+              <td className="px-4 py-2">{record.status}</td>
+              <td className="px-4 py-2">
+                {new Date(record.recordTime).toLocaleString('en-GB', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}
+              </td>
+              <td className="px-4 py-2">{record.userRatingPercent}</td>
+              <td className="px-4 py-2">{record.predictedPercent}</td>
+              <td className="px-4 py-2">{record.recordType.recordTypeName}</td>
+              <td className="px-4 py-2">
+                {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) + ' stars' : null}
+              </td>
+              <td className="px-4 py-2">
+                {record.userVotings.length > 0 ? 'Level ' + Math.max(...record.userVotings.map(voting => voting.voteLevel)) : null}
+              </td>
+              <td className="px-4 py-2">
+                <Link href={`/dashboard/record/${record.id}`}>
+                  View Details
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="flex items-center mt-2 space-x-4">
+        <button
+          onClick={() => setCurrentPage((prevPage) => Math.max(1, prevPage - 1))}
+          disabled={currentPage === 1}
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+        >
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage((prevPage) => Math.min(currentPage + 1, totalPages))}
+          disabled={currentPage >= totalPages}
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+        >
+          Next
+        </button>
+      </div>
     </>
   );
 };

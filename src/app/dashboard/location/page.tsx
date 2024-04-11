@@ -18,15 +18,12 @@ export default async function Location(token : string | undefined) {
         <thead>
           <tr>
             <th className="border px-4 py-2">Location Name</th>
+            <th className="border px-4 py-2">Number Of Camera</th>
+            <th className="border px-4 py-2">Number Of Security</th>
           </tr>
         </thead>
         <tbody>
           <GetLocation token={token} />
-          {/* {location.map((location) => (
-            <tr key={location.id}>
-              <td className="border px-4 py-2">{location.locationName}</td>
-            </tr>
-          ))} */}
         </tbody>
       </table>
     </div>

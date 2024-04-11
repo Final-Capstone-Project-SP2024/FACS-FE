@@ -1,2 +1,2 @@
-import RecordRow from "./RecordTable";
+import RecordRow from "./RecordRow";
 export { RecordRow };

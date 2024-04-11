@@ -45,7 +45,13 @@ export default function GetLocation({ token }: { token: string | undefined }) {
             {locations.map((location, index) => (
                 <tr key={index} className="border-b border-gray-200">
                     <td className="px-4 py-2">
-                        <Link href={`location/${location.locationId}`} className="text-blue-500 hover:underline">{location.locationName}</Link> {/* Use Link component with Tailwind CSS classes */}
+                        <Link href={`location/${location.locationId}`} className="text-blue-500 hover:underline">{location.locationName}</Link>
+                    </td>
+                    <td className="px-4 py-2">
+                        {location.numberOfCamera}
+                    </td>
+                    <td className="px-4 py-2">
+                        {location.numberOfSecurity}
                     </td>
                 </tr>
             ))}
