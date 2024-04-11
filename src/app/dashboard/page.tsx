@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chart } from './components';
+import { Chart, PieChart } from './components';
 import { Card } from './components';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/options';
@@ -20,7 +20,7 @@ export default async function page(token: string | undefined) {
           <Chart token={token} />
         </div>
         <div className='flex-1'>
-          <Chart token={token} />
+          <PieChart />
         </div>
       </div>
 

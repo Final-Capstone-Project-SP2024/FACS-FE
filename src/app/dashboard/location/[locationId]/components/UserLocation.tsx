@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import AddUserToLocation from './AddUserToLocation';
+import RemoveStaffFromLocation from './RemoveStaffFromLocation';
 
 const handleGetUserLocation = async (locationId: string, token: string | undefined) => {
     const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}`, {
@@ -69,6 +70,7 @@ export default function UserLocation({ locationId, token }: { locationId: string
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index}</td>
                             {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{location.userID}</td> */}
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{location.name}</td>
+                            <RemoveStaffFromLocation staffId={location.userID} locationId={locationId} token={token} updateUserLocations={updateUserLocations} />
                         </tr>
                     ))}
                 </tbody>

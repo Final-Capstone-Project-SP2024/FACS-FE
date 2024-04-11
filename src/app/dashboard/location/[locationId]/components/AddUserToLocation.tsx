@@ -16,7 +16,7 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ staff: selectedUsers })
+                body: JSON.stringify({ staff: selectedUsers })  
             });
             if (res.ok) {
                 console.log('Users added to location successfully');
@@ -39,7 +39,7 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/unregistered`, {
+            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/unregistered`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

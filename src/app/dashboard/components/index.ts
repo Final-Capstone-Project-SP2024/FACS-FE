@@ -1,4 +1,4 @@
 import Chart from "./Chart";
 import Card from "./Card";
-export { Chart };
-export { Card };
+import PieChart from "./PieChart";
+export { Chart, PieChart, Card};

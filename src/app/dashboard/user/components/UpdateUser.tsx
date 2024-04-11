@@ -1,13 +1,36 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function UpdateUser({ userId, onUpdate , token }: { userId: string; onUpdate: Function ;token: string | undefined }) {
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [name, setName] = useState('');
+type User = {
+    id: string;
+    securityCode: string;
+    email: string;
+    name: string;
+    phone: string;
+    role: {
+        roleName: string;
+    };
+    status: string;
+    locationName: string;
+    token: string | undefined;
+};
+
+export default function UpdateUser({ userId, user, onUpdate, token }: { userId: string; user: User; onUpdate: Function; token: string | undefined }) {
+    const [email, setEmail] = useState(user.email);
+    const [phone, setPhone] = useState(user.phone);
+    const [name, setName] = useState(user.name);
     const [showModal, setShowModal] = useState(false);
 
-    const handleUpdateUser = async () => {
+    useEffect(() => {
+        // When the user prop changes, reset the form fields
+        setEmail(user.email);
+        setPhone(user.phone);
+        setName(user.name);
+    }, [user]);
+
+    const handleUpdateUser = async (e: React.FormEvent) => {
+        e.preventDefault(); // Prevent form submission
+
         try {
             const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${userId}`, {
                 method: 'PATCH',
@@ -84,7 +107,6 @@ export default function UpdateUser({ userId, onUpdate , token }: { userId: strin
                                 <button
                                     type="submit"
                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                    onClick={handleUpdateUser}
                                 >
                                     Update User
                                 </button>

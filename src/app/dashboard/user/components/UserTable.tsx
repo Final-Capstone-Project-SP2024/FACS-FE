@@ -174,7 +174,18 @@ export default function UserTable({ token }: { token: string | undefined }) {
                                 <td className="px-4 py-2 border">{user.status}</td>
                                 <td className="px-4 py-2 border">{user.locationName}</td>
                                 <td className="px-4 py-2 border">
-                                    <UpdateUser userId={user.id} token={token} />
+                                    {
+                                        user.role.roleName !== 'Manager' ? (
+                                            <UpdateUser
+                                                token={user.token}
+                                                userId={user.id}
+                                                user={user}
+                                                onUpdate={() => {
+                                                    setCurrentPage(currentPage);
+                                                }}
+                                            />
+                                        ) : null
+                                    }
                                 </td>
                             </tr>
                         ))}
