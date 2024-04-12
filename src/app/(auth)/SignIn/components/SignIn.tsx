@@ -17,7 +17,7 @@ export default function SignIn() {
                 securityCode,
                 password,
                 redirect: true,
-                callbackUrl: "/",
+                callbackUrl: "/dashboard",
             });
             // console.log(res);
 
