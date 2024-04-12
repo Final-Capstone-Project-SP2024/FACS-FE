@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import React from 'react'
 import { AddLocation, GetLocation } from './components';
 
-export default async function Location(token : string | undefined) {
+export default async function Location({ params }: { params: { locationId: string } }, token: string | undefined) {
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
   const listLocations: ILocations = await getLocation(token);

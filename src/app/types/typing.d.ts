@@ -16,9 +16,9 @@ export interface IUsers {
 }
 
 export interface ICameras {
-    cameras: [
-        data: {
-            cameraId: string;
+    data: [
+        {
+            id: string;
             cameraName: string;
             cameraDestination: string;
             status: string;
@@ -28,8 +28,8 @@ export interface ICameras {
 }
 
 export interface ILocations {
-    locations: [
-        data: {
+    data: [
+        {
             locationId: string;
             locationName: string;
         }

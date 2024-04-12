@@ -1,10 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import AddUserToLocation from './AddUserToLocation';
-import RemoveStaffFromLocation from './RemoveStaffFromLocation';
 
 const handleGetUserLocation = async (locationId: string, token: string | undefined) => {
-    const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}`, {
+    const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}/getUser`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -18,14 +17,13 @@ const handleGetUserLocation = async (locationId: string, token: string | undefin
         console.log(apiResponse.data);
         return apiResponse.data;
     } else {
-        console.error('Failed to fetch location');
-        return [];
+        throw new Error('Failed to fetch location');
     }
 };
 
 export default function UserLocation({ locationId, token }: { locationId: string; token: string | undefined }) {
-    const [locations, setLocations] = useState([]);
-    const [error, setError] = useState(null);
+    const [locations, setLocations] = useState<any[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchUserLocations = async () => {
@@ -35,7 +33,8 @@ export default function UserLocation({ locationId, token }: { locationId: string
             const data = await handleGetUserLocation(locationId, token);
             setLocations(data);
         } catch (error) {
-            setError(error.message);
+            const errorMessage = (error as Error).message;
+            setError(errorMessage || 'Failed to fetch user locations');
         } finally {
             setLoading(false);
         }
@@ -60,7 +59,6 @@ export default function UserLocation({ locationId, token }: { locationId: string
                 <thead>
                     <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium">Index</th>
-                        {/* <th className="px-6 py-3 text-left text-xs font-medium">User ID</th> */}
                         <th className="px-6 py-3 text-left text-xs font-medium">User Name</th>
                     </tr>
                 </thead>
@@ -68,9 +66,7 @@ export default function UserLocation({ locationId, token }: { locationId: string
                     {locations.map((location, index) => (
                         <tr key={index}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index}</td>
-                            {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{location.userID}</td> */}
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{location.name}</td>
-                            <RemoveStaffFromLocation staffId={location.userID} locationId={locationId} token={token} updateUserLocations={updateUserLocations} />
                         </tr>
                     ))}
                 </tbody>

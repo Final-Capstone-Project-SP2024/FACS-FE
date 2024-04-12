@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import React from 'react';
 import RecordRow from './components/RecordRow';
 
-export default async function Record(token: string | undefined) {
+export default async function Record({ params }: { params: { locationId: string } }, token: string | undefined) {
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
   const listRecords: IRecords = await getRecords(token);

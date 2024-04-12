@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import React from 'react'
 import { AddCamera, GetCamera } from './components';
 
-export default async function Camera(token : string | undefined) {
+export default async function Camera({ params }: { params: { locationId: string } }, token: string | undefined) {
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
   const listCameras: ICameras = await getCamera(token);

@@ -26,7 +26,7 @@ export default function AddCamera({ token }: { token: string | undefined}) {
         throw new Error("Failed to fetch locations");
       }
       const data = await response.json();
-      setListLocations(data);
+      setListLocations(data.data);
     } catch (error) {
       console.error(error);
     }
@@ -120,7 +120,7 @@ export default function AddCamera({ token }: { token: string | undefined}) {
                           className="mt-1 p-2 w-full border-gray-300 rounded-md"
                         >
                           <option value="">Select location...</option>
-                          {listLocations?.data.map((location) => (
+                          {listLocations?.map((location) => (
                             <option key={location.locationId} value={location.locationId}>{location.locationName}</option>
                           ))}
                         </select>

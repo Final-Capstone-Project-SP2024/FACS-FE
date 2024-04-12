@@ -4,7 +4,7 @@ import { Card } from './components';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/options';
 
-export default async function page(token: string | undefined) {
+export default async function page({ params }: { params: { locationId: string } }, token: string | undefined) {
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
 
