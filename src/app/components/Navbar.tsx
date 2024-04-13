@@ -13,7 +13,7 @@ export default async function Navbar() {
         <nav className="shadow">
           <div className="flex justify-between items-center py-2 px-5 container mx-auto">
             <div>
-              <a href="/" className="text-2xl font-bold bg-gradient-to-tr from-red-500 to-yellow-600 bg-clip-text text-transparent hover:cursor-pointer">Fire Alarm Camera Solution</a>
+              <a href="/dashboard" className="text-2xl font-bold bg-gradient-to-tr from-red-500 to-yellow-600 bg-clip-text text-transparent hover:cursor-pointer">Fire Alarm Camera Solution</a>
             </div>
             <div>
               <div className="hover:cursor-pointer sm:hidden">
