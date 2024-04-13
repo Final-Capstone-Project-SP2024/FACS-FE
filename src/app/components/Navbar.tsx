@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import Link from "next/link";
 import { SignOut } from ".";
+import logo from '../../../public/logo.png';
+import Image from 'next/image';
 
 export default async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -13,7 +15,7 @@ export default async function Navbar() {
         <nav className="shadow">
           <div className="flex justify-between items-center py-2 px-5 container mx-auto">
             <div>
-              <a href="/dashboard" className="text-2xl font-bold bg-gradient-to-tr from-red-500 to-yellow-600 bg-clip-text text-transparent hover:cursor-pointer">Fire Alarm Camera Solution</a>
+              <a href="/dashboard" className="text-2xl font-bold bg-gradient-to-tr from-red-500 to-yellow-600 bg-clip-text text-transparent hover:cursor-pointer"><Image src={logo} alt="" height="60"/></a>
             </div>
             <div>
               <div className="hover:cursor-pointer sm:hidden">
