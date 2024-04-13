@@ -13,6 +13,7 @@ export default async function Camera({ params }: { params: { locationId: string 
   // console.log(camera);
   return (
     <div className='mb-4'>
+      <h1 className="text-2xl font-bold my-4">Camera List</h1>
       <AddCamera token={token}/>
       <table>
         <thead>

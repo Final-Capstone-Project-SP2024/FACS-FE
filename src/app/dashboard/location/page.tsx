@@ -13,7 +13,8 @@ export default async function Location({ params }: { params: { locationId: strin
   console.log(location);
   return (
     <div>
-      <AddLocation token={token} />
+      <h1 className="text-2xl font-bold my-4">Location List</h1>
+      <div className=''><AddLocation token={token} /></div>
       <table>
         <thead>
           <tr>

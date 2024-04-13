@@ -20,7 +20,8 @@ export default async function User({ searchParams }: SearchParamsProps, token: s
 
   return (
     <div>
-      <div className="mb-4">
+      <h1 className="text-2xl font-bold my-4">User List</h1>
+      <div className="mr-2 float-right">
         <AddUser token={token} />
       </div>
       <UserTable token={token} />
