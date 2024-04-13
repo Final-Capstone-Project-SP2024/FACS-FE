@@ -53,7 +53,7 @@ export default function UserLocation({ locationId, token }: { locationId: string
 
     return (
         <div>
-            <h2>User Locations</h2>
+            <h1 className="text-2xl font-bold my-4">User Locations</h1>
             <AddUserToLocation locationId={locationId} token={token} updateUserLocations={updateUserLocations} />
             <table className="min-w-full divide-y divide-gray-200">
                 <thead>
