@@ -120,7 +120,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
 
     const tableHeader = (
         <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-gray-100 border-b border-gray-200">
                 <th className="px-4 py-2 border">Security Code</th>
                 <th className="px-4 py-2 border">Email</th>
                 <th className="px-4 py-2 border">Name</th>
@@ -161,7 +161,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             {loading ? (
                 <div className="text-center text-gray-500">Loading...</div>
             ) : users.length > 0 ? (
-                <table className="w-full border-collapse">
+                <table className="table-auto w-full border-collapse border border-gray-300">
                     {tableHeader}
                     <tbody>
                         {users.map((user) => (

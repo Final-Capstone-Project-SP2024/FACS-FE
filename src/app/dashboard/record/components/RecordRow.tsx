@@ -141,8 +141,8 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         <tbody>
           {records.map((record, index) => (
             <tr key={index} className="border-b border-gray-200">
-              <td className="px-4 py-2">{record.status}</td>
-              <td className="px-4 py-2">
+              <td className="px-4 py-2 border">{record.status}</td>
+              <td className="px-4 py-2 border">
                 {new Date(record.recordTime).toLocaleString('en-GB', {
                   day: '2-digit',
                   month: '2-digit',
@@ -153,19 +153,23 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
                   hour12: false,
                 })}
               </td>
-              <td className="px-4 py-2">{record.userRatingPercent}</td>
-              <td className="px-4 py-2">{record.predictedPercent}</td>
-              <td className="px-4 py-2">{record.recordType.recordTypeName}</td>
-              <td className="px-4 py-2">
+              <td className="px-4 py-2 border">{record.userRatingPercent}</td>
+              <td className="px-4 py-2 border">{record.predictedPercent}</td>
+              <td className="px-4 py-2 border">{record.recordType.recordTypeName}</td>
+              <td className="px-4 py-2 border">
                 {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) + ' stars' : null}
               </td>
-              <td className="px-4 py-2">
+              <td className="px-4 py-2 border">
                 {record.userVotings.length > 0 ? 'Level ' + Math.max(...record.userVotings.map(voting => voting.voteLevel)) : null}
               </td>
-              <td className="px-4 py-2">
-                <Link href={`/dashboard/record/${record.id}`}>
-                  View Details
-                </Link>
+              <td className="px-4 py-2 border">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  <Link href={`/dashboard/record/${record.id}`}>
+                    View Details
+                  </Link>
+                </button>
               </td>
             </tr>
           ))}

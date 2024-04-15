@@ -19,9 +19,9 @@ export default async function User({ searchParams }: SearchParamsProps, token: s
   console.log(searchParams.Page);
 
   return (
-    <div>
+    <div className='container mx-auto'>
       <h1 className="text-2xl font-bold my-4">User List</h1>
-      <div className="mr-2 float-right">
+      <div className="mr-6 float-right">
         <AddUser token={token} />
       </div>
       <UserTable token={token} />
