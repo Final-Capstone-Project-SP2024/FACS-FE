@@ -138,7 +138,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
             >
                 Previous
             </button>
@@ -148,7 +148,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage >= totalPages}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
             >
                 Next
             </button>
@@ -166,14 +166,14 @@ export default function UserTable({ token }: { token: string | undefined }) {
                     <tbody>
                         {users.map((user) => (
                             <tr key={user.id} className="border-b">
-                                <td className="px-4 py-2 border">{user.securityCode}</td>
-                                <td className="px-4 py-2 border">{user.email}</td>
-                                <td className="px-4 py-2 border">{user.name}</td>
-                                <td className="px-4 py-2 border">{user.phone}</td>
-                                <td className="px-4 py-2 border">{user.role.roleName}</td>
-                                <td className="px-4 py-2 border">{user.status}</td>
-                                <td className="px-4 py-2 border">{user.locationName}</td>
-                                <td className="px-4 py-2 border">
+                                <td className="px-4 py-2 border text-center">{user.securityCode}</td>
+                                <td className="px-4 py-2 border text-center">{user.email}</td>
+                                <td className="px-4 py-2 border text-center">{user.name}</td>
+                                <td className="px-4 py-2 border text-center">{user.phone}</td>
+                                <td className="px-4 py-2 border text-center">{user.role.roleName}</td>
+                                <td className="px-4 py-2 border text-center">{user.status}</td>
+                                <td className="px-4 py-2 border text-center">{user.locationName}</td>
+                                <td className="px-4 py-2 border text-center">
                                     {
                                         user.role.roleName !== 'Manager' ? (
                                             <UpdateUser

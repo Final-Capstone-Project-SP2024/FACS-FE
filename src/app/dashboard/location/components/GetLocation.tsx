@@ -44,13 +44,16 @@ export default function GetLocation({ token }: { token: string | undefined }) {
         <>
             {locations.map((location, index) => (
                 <tr key={index} className="border-b border-gray-200">
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 border text-center">
+                        {index + 1}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
                         <Link href={`location/${location.locationId}`} className="text-blue-500 hover:underline">{location.locationName}</Link>
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 border text-center">
                         {location.numberOfCamera}
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 border text-center">
                         {location.numberOfSecurity}
                     </td>
                 </tr>

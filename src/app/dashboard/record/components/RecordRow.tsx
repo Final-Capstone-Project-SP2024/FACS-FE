@@ -128,21 +128,21 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
       <table className="table-auto w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100 border-b border-gray-200">
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Record Time</th>
-            <th className="px-4 py-2">User Rating(%)</th>
-            <th className="px-4 py-2">Predicted(%)</th>
-            <th className="px-4 py-2">Record Type Name</th>
-            <th className="px-4 py-2">Most Ratings</th>
-            <th className="px-4 py-2">Most Votings</th>
-            <th className="px-4 py-2">Actions</th>
+            <th className="px-4 py-2 border">Status</th>
+            <th className="px-4 py-2 border">Record Time</th>
+            <th className="px-4 py-2 border">User Rating(%)</th>
+            <th className="px-4 py-2 border">Predicted(%)</th>
+            <th className="px-4 py-2 border">Record Type Name</th>
+            <th className="px-4 py-2 border">Most Ratings</th>
+            <th className="px-4 py-2 border">Most Votings</th>
+            <th className="px-4 py-2 border">Actions</th>
           </tr>
         </thead>
         <tbody>
           {records.map((record, index) => (
             <tr key={index} className="border-b border-gray-200">
-              <td className="px-4 py-2 border">{record.status}</td>
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border text-center">{record.status}</td>
+              <td className="px-4 py-2 border text-center">
                 {new Date(record.recordTime).toLocaleString('en-GB', {
                   day: '2-digit',
                   month: '2-digit',
@@ -153,16 +153,16 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
                   hour12: false,
                 })}
               </td>
-              <td className="px-4 py-2 border">{record.userRatingPercent}</td>
-              <td className="px-4 py-2 border">{record.predictedPercent}</td>
-              <td className="px-4 py-2 border">{record.recordType.recordTypeName}</td>
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border text-center">{record.userRatingPercent}</td>
+              <td className="px-4 py-2 border text-center">{record.predictedPercent}</td>
+              <td className="px-4 py-2 border text-center">{record.recordType.recordTypeName}</td>
+              <td className="px-4 py-2 border text-center">
                 {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) + ' stars' : null}
               </td>
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border text-center">
                 {record.userVotings.length > 0 ? 'Level ' + Math.max(...record.userVotings.map(voting => voting.voteLevel)) : null}
               </td>
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border text-center">
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 >
@@ -180,7 +180,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         <button
           onClick={() => setCurrentPage((prevPage) => Math.max(1, prevPage - 1))}
           disabled={currentPage === 1}
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
         >
           Previous
         </button>
@@ -190,7 +190,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         <button
           onClick={() => setCurrentPage((prevPage) => Math.min(currentPage + 1, totalPages))}
           disabled={currentPage >= totalPages}
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
         >
           Next
         </button>

@@ -53,7 +53,7 @@ export default function UpdateUser({ userId, user, onUpdate, token }: { userId: 
     };
 
     return (
-        <div className='flex flex-col items-center'>
+        <div>
             <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => setShowModal(true)}
