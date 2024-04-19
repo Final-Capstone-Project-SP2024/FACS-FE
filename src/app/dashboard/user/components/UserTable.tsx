@@ -76,6 +76,13 @@ export default function UserTable({ token }: { token: string | undefined }) {
         status: '',
     });
 
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const handleRowClick = (user: User) => {
+        setSelectedUser(user);
+        setShowModal(true);
+    };
+
     useEffect(() => {
         const fetchUsers = async () => {
             setLoading(true);
@@ -119,22 +126,22 @@ export default function UserTable({ token }: { token: string | undefined }) {
     );
 
     const tableHeader = (
-        <thead>
-            <tr className="bg-gray-100 border-b border-gray-200">
-                <th className="px-4 py-2 border">Security Code</th>
-                <th className="px-4 py-2 border">Email</th>
-                <th className="px-4 py-2 border">Name</th>
-                <th className="px-4 py-2 border">Phone</th>
-                <th className="px-4 py-2 border">Role</th>
-                <th className="px-4 py-2 border">Status</th>
-                <th className="px-4 py-2 border">Location</th>
-                <th className="px-4 py-2 border">Update</th>
+        <thead className="bg-gray-100">
+            <tr>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Security Code</th>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Email</th>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Name</th>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Phone</th>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Role</th>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Status</th>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Location</th>
+                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Update</th>
             </tr>
         </thead>
     );
 
     const paginationControls = (
-        <div className="flex items-center mt-4 space-x-4">
+        <div className="flex items-center justify-center space-x-4 mt-4">
             <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
@@ -159,40 +166,42 @@ export default function UserTable({ token }: { token: string | undefined }) {
         <>
             {filterUI}
             {loading ? (
-                <div className="text-center text-gray-500">Loading...</div>
+                <div className="text-center py-4 text-gray-500">Loading...</div>
             ) : users.length > 0 ? (
-                <table className="table-auto w-full border-collapse border border-gray-300">
-                    {tableHeader}
-                    <tbody>
-                        {users.map((user) => (
-                            <tr key={user.id} className="border-b">
-                                <td className="px-4 py-2 border text-center">{user.securityCode}</td>
-                                <td className="px-4 py-2 border text-center">{user.email}</td>
-                                <td className="px-4 py-2 border text-center">{user.name}</td>
-                                <td className="px-4 py-2 border text-center">{user.phone}</td>
-                                <td className="px-4 py-2 border text-center">{user.role.roleName}</td>
-                                <td className="px-4 py-2 border text-center">{user.status}</td>
-                                <td className="px-4 py-2 border text-center">{user.locationName}</td>
-                                <td className="px-4 py-2 border text-center">
-                                    {
-                                        user.role.roleName !== 'Manager' ? (
-                                            <UpdateUser
-                                                token={user.token}
-                                                userId={user.id}
-                                                user={user}
-                                                onUpdate={() => {
-                                                    setCurrentPage(currentPage);
-                                                }}
-                                            />
-                                        ) : null
-                                    }
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <div className="overflow-x-auto">
+                    <table className="table-auto w-full border-collapse border border-gray-300 bg-white">
+                        {tableHeader}
+                        <tbody>
+                            {users.map((user) => (
+                                <tr key={user.id} className="hover:bg-gray-50">
+                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.securityCode}</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.email}</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.name}</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.phone}</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.role.roleName}</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.status}</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.locationName}</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-center">
+                                        {
+                                            user.role.roleName !== 'Manager' ? (
+                                                <UpdateUser
+                                                    token={user.token}
+                                                    userId={user.id}
+                                                    user={user}
+                                                    onUpdate={() => {
+                                                        setCurrentPage(currentPage);
+                                                    }}
+                                                />
+                                            ) : null
+                                        }
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             ) : (
-                <div className="text-center text-gray-500">No users found</div>
+                <div className="text-center py-4 text-gray-500">No users found</div>
             )}
             {paginationControls}
         </>
