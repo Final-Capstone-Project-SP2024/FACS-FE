@@ -6,7 +6,7 @@ import { authOptions } from '../api/auth/[...nextauth]/options';
 import { ICameras, ILocations, IRecords, IUsers } from '../types';
 import { getCamera, getLocation, getTop5Records, getUsers } from '../lib';
 
-function addSpacesToCamelCase(text : string) {
+function addSpacesToCamelCase(text: string) {
   return text.replace(/([A-Z])/g, ' $1').trim();
 }
 
@@ -32,27 +32,27 @@ export default async function page({ params }: { params: { locationId: string } 
   // console.log(listRecords);
 
   return (
-    <div className='container mx-auto p-4'>
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4  '>
+    <div className='container mx-auto p-4 bg-gray-100'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
         <Card input={"user"} numberAdd={totalUser + ''} type={"Total Security"} />
         <Card input={"location"} numberAdd={totalLocation + ''} type={"Total Location"} />
         <Card input={"camera"} numberAdd={activeCameras + ' / ' + totalCamera} type={"Total Camera Connected"} />
         <Card input={"record"} numberAdd={totalRecords + ''} type={"Total Record"} />
       </div>
-      <div className='my-2 grid grid-cols-4 gap-4'>
+      <div className='mb-4 grid grid-cols-4 gap-4'>
         <div className='col-span-3'>
           <div className="bg-white p-4 rounded-md shadow-md">
             <table className="min-w-full leading-normal">
               <thead>
                 <tr>
-                  <th scope="col" className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th scope="col" className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                     Status
                   </th>
-                  <th scope="col" className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th scope="col" className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                     Record Time
                   </th>
-                  <th scope="col" className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Record Type Name
+                  <th scope="col" className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                    Record Type
                   </th>
                 </tr>
               </thead>
@@ -76,7 +76,14 @@ export default async function page({ params }: { params: { locationId: string } 
                       </p>
                     </td>
                     <td className="px-5 py-2 border-b border-gray-200 text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">{addSpacesToCamelCase(record.recordType.recordTypeName)}</p>
+                      <p className={`whitespace-no-wrap inline-block px-2 py-1 rounded 
+                      ${record.recordType.recordTypeName === 'Detection' ? 'border border-green-500 text-green-500 bg-green-100' :
+                          record.recordType.recordTypeName === 'ElectricalIncident' ? 'border border-yellow-800 text-yellow-800 bg-yellow-200 font-bold' :
+                            record.recordType.recordTypeName === 'AlarmByUser' ? 'border border-red-500 text-red-500 bg-red-100' :
+                              'border border-gray-300 text-gray-900 bg-gray-100'
+                        }`}>
+                        {addSpacesToCamelCase(record.recordType.recordTypeName)}
+                      </p>
                     </td>
                   </tr>
                 ))}
@@ -90,11 +97,11 @@ export default async function page({ params }: { params: { locationId: string } 
             <table className="min-w-full leading-normal">
               <thead>
                 <tr>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Camera Name
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                    Name
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Camera Destination
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                    Destination
                   </th>
                 </tr>
               </thead>

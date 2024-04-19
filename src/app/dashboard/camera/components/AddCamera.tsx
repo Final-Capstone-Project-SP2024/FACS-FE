@@ -67,7 +67,7 @@ export default function AddCamera({ token }: { token: string | undefined}) {
   return (
     <div>
       <button
-        className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => setShowModal(true)}
       >
         Add Camera
@@ -131,7 +131,7 @@ export default function AddCamera({ token }: { token: string | undefined}) {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 >
                   Add Camera
                 </button>

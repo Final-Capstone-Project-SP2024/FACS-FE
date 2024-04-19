@@ -150,7 +150,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
             >
                 Previous
             </button>
@@ -160,7 +160,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage >= totalPages}
-                className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
             >
                 Next
             </button>

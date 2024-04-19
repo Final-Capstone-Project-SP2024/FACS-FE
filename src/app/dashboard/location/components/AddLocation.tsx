@@ -29,7 +29,7 @@ export default function AddLocation({ token }: { token: string | undefined }) {
     return (
         <div>
             <button
-                className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => setShowModal(true)}
             >
                 Add Location
@@ -54,7 +54,7 @@ export default function AddLocation({ token }: { token: string | undefined }) {
                                 Cancel
                             </button>
                             <button
-                                className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded"
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 onClick={handleAddLocation}
                             >
                                 Submit

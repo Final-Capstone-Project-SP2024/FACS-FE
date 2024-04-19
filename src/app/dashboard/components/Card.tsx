@@ -1,25 +1,23 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import React from 'react'
-import { MdSupervisedUserCircle, MdWorkHistory } from 'react-icons/md';
+import { MdSupervisedUserCircle, MdWorkHistory, MdLocationOn } from 'react-icons/md';
 import { CiCamera } from "react-icons/ci";
-import { MdLocationOn } from "react-icons/md";
 
 type CardInputType = 'user' | 'camera' | 'location' | 'record';
 
 export default function Card({ input, type, numberAdd }: { input: CardInputType, type: string, numberAdd: string }) {
     const typeIconMap: Record<CardInputType, JSX.Element> = {
-        user: <MdSupervisedUserCircle size={24} />,
-        camera: <CiCamera size={24} />,
-        location: <MdLocationOn size={24} />,
-        record: <MdWorkHistory size={24} />,
+        user: <MdSupervisedUserCircle size={35} className="text-blue-500" />,
+        camera: <CiCamera size={35} className="text-green-500" />,
+        location: <MdLocationOn size={35} className="text-red-500" />,
+        record: <MdWorkHistory size={35} className="text-yellow-700" />,
     };
 
     return (
-        <div className='bg-white p-4 my-4 rounded-lg flex items-center space-x-4 shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer'>
+        <div className='bg-white p-4 mb-4 rounded-lg flex items-center space-x-4 shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer'>
             {typeIconMap[input]}
             <div className='flex flex-col'>
-                <span className='text-gray-600 text-sm'>{type}</span>
-                <span className='text-lg font-semibold'>{numberAdd}</span>
+                <span className='text-gray-600 text-xs'>{type}</span>
+                <span className='text-xl font-bold'>{numberAdd}</span>
             </div>
         </div>
     );

@@ -109,13 +109,13 @@ export default function Chart({ token }: { token: string | undefined }) {
         labels = data.map((item: any) => {
           const date = new Date(item.Month);
           return date.toISOString().split('T')[0];
-      });
+        });
 
       } else if (interval === 'year') {
         labels = data.map((item: any) => {
           const date = new Date(item.Year);
           return date.toISOString().split('T')[0];
-      });
+        });
       }
 
       const chartData = {
@@ -125,7 +125,7 @@ export default function Chart({ token }: { token: string | undefined }) {
             label: `Incident count by ${interval}`,
             data: data.map((item: any) => item.Count),
             fill: false,
-            borderColor: 'rgb(252 165 165)',
+            borderColor: 'rgb(100 181 246)',
             tension: 0.1,
           },
         ],
@@ -142,11 +142,17 @@ export default function Chart({ token }: { token: string | undefined }) {
 
   return (
     <div className="w-full h-96 bg-white p-4 rounded-md shadow-md flex flex-col">
-      <div className="mb-4 flex flex-wrap">
-        <button onClick={() => updateChartData('day')} className="mr-2 px-4 py-2 bg-[#F87171] hover:bg-[#EF4444] text-white rounded-md">Day</button>
-        <button onClick={() => updateChartData('last7Days')} className="mr-2 px-4 py-2 bg-[#F87171] hover:bg-[#EF4444] text-white rounded-md">Last Week</button>
-        <button onClick={() => updateChartData('month')} className="mr-2 px-4 py-2 bg-[#F87171] hover:bg-[#EF4444] text-white rounded-md">Month</button>
-        <button onClick={() => updateChartData('year')} className="mr-2 px-4 py-2 bg-[#F87171] hover:bg-[#EF4444] text-white rounded-md">Year</button>
+      <div className="mb-4">
+        <select
+          defaultValue="day"
+          onChange={(e) => updateChartData(e.target.value)}
+          className="px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+        >
+          <option value="day">Day</option>
+          <option value="last7Days">Last Week</option>
+          <option value="month">Month</option>
+          <option value="year">Year</option>
+        </select>
       </div>
       {chartData ? (
         <div className="flex-grow">
