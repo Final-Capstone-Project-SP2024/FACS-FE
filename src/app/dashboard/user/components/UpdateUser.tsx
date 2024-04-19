@@ -15,21 +15,29 @@ type User = {
     token: string | undefined;
 };
 
-export default function UpdateUser({ userId, user, onUpdate, token }: { userId: string; user: User; onUpdate: Function; token: string | undefined }) {
+type UpdateUserProps = {
+    userId: string;
+    user: User;
+    onUpdate: Function;
+    token: string | undefined;
+    showModal: boolean;
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function UpdateUser({ userId, user, onUpdate, token, showModal, setShowModal }: UpdateUserProps) {
     const [email, setEmail] = useState(user.email);
     const [phone, setPhone] = useState(user.phone);
     const [name, setName] = useState(user.name);
-    const [showModal, setShowModal] = useState(false);
+    // const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        // When the user prop changes, reset the form fields
         setEmail(user.email);
         setPhone(user.phone);
         setName(user.name);
     }, [user]);
 
     const handleUpdateUser = async (e: React.FormEvent) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault();
 
         try {
             const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${userId}`, {
@@ -53,14 +61,7 @@ export default function UpdateUser({ userId, user, onUpdate, token }: { userId: 
     };
 
     return (
-        <div>
-            <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setShowModal(true)}
-            >
-                Update
-            </button>
-
+        <>
             {showModal && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
                     <div className="bg-white p-8 rounded shadow-md">
@@ -106,15 +107,16 @@ export default function UpdateUser({ userId, user, onUpdate, token }: { userId: 
                                 </button>
                                 <button
                                     type="submit"
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded"
                                 >
                                     Update User
                                 </button>
+                                
                             </div>
                         </form>
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

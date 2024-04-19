@@ -164,7 +164,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
               </td>
               <td className="px-4 py-2 border text-center">
                 <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded"
                 >
                   <Link href={`/dashboard/record/${record.id}`}>
                     View Details
@@ -180,7 +180,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         <button
           onClick={() => setCurrentPage((prevPage) => Math.max(1, prevPage - 1))}
           disabled={currentPage === 1}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+          className="bg-[#F87171] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
         >
           Previous
         </button>
@@ -190,7 +190,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         <button
           onClick={() => setCurrentPage((prevPage) => Math.min(currentPage + 1, totalPages))}
           disabled={currentPage >= totalPages}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+          className="bg-[#F87171] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
         >
           Next
         </button>

@@ -78,9 +78,14 @@ export default function UserTable({ token }: { token: string | undefined }) {
 
     const [showModal, setShowModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
     const handleRowClick = (user: User) => {
-        setSelectedUser(user);
-        setShowModal(true);
+        if (user.role.roleName !== 'Manager') {
+            setSelectedUser(user);
+            setShowModal(true);
+        } else {
+            console.log('Update not allowed for Manager role.');
+        }
     };
 
     useEffect(() => {
@@ -119,8 +124,8 @@ export default function UserTable({ token }: { token: string | undefined }) {
                 className="px-3 py-2 border border-gray-300 rounded-lg"
             >
                 <option value="">Select Status</option>
-                <option value="actived">Active</option>
-                <option value="inactived">Inactive</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
             </select>
         </div>
     );
@@ -135,7 +140,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                 <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Role</th>
                 <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Status</th>
                 <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Location</th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Update</th>
+                {/* <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Update</th> */}
             </tr>
         </thead>
     );
@@ -145,7 +150,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+                className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
             >
                 Previous
             </button>
@@ -155,7 +160,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage >= totalPages}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+                className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
             >
                 Next
             </button>
@@ -163,7 +168,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
     );
 
     return (
-        <>
+        <div className='m-3'>
             {filterUI}
             {loading ? (
                 <div className="text-center py-4 text-gray-500">Loading...</div>
@@ -173,7 +178,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                         {tableHeader}
                         <tbody>
                             {users.map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-50">
+                                <tr key={user.id} className="hover:bg-gray-50" onClick={() => handleRowClick(user)}>
                                     <td className="border border-gray-300 px-4 py-2 text-center">{user.securityCode}</td>
                                     <td className="border border-gray-300 px-4 py-2 text-center">{user.email}</td>
                                     <td className="border border-gray-300 px-4 py-2 text-center">{user.name}</td>
@@ -181,7 +186,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                                     <td className="border border-gray-300 px-4 py-2 text-center">{user.role.roleName}</td>
                                     <td className="border border-gray-300 px-4 py-2 text-center">{user.status}</td>
                                     <td className="border border-gray-300 px-4 py-2 text-center">{user.locationName}</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">
+                                    {/* <td className="border border-gray-300 px-4 py-2 text-center">
                                         {
                                             user.role.roleName !== 'Manager' ? (
                                                 <UpdateUser
@@ -194,7 +199,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                                                 />
                                             ) : null
                                         }
-                                    </td>
+                                    </td> */}
                                 </tr>
                             ))}
                         </tbody>
@@ -204,6 +209,17 @@ export default function UserTable({ token }: { token: string | undefined }) {
                 <div className="text-center py-4 text-gray-500">No users found</div>
             )}
             {paginationControls}
-        </>
+            {selectedUser && (
+                <UpdateUser
+                    userId={selectedUser.id}
+                    user={selectedUser}
+                    onUpdate={() => {
+                    }}
+                    token={token}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                />
+            )}
+        </div>
     );
 }
