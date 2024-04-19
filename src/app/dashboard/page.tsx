@@ -29,7 +29,7 @@ export default async function page({ params }: { params: { locationId: string } 
 
   const listRecords: IRecords = await getTop5Records(token);
   const totalRecords = listRecords.totalNumberOfRecords;
-  console.log(listRecords);
+  // console.log(listRecords);
 
   return (
     <div className='container mx-auto p-4'>

@@ -93,7 +93,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
   }, [token, currentPage, filters]);
 
   const filterUI = (
-    <div className="flex space-x-4 mb-4">
+    <div className="flex space-x-4 my-4">
       <input
         type="date"
         placeholder="From Date"
@@ -133,7 +133,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
             <th className="px-4 py-2 border">User Rating(%)</th>
             <th className="px-4 py-2 border">Predicted(%)</th>
             <th className="px-4 py-2 border">Record Type Name</th>
-            <th className="px-4 py-2 border">Most Ratings</th>
+            <th className="px-4 py-2 border">Ratings</th>
             <th className="px-4 py-2 border">Most Votings</th>
             <th className="px-4 py-2 border">Actions</th>
           </tr>
@@ -157,14 +157,14 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
               <td className="px-4 py-2 border text-center">{record.predictedPercent}</td>
               <td className="px-4 py-2 border text-center">{record.recordType.recordTypeName}</td>
               <td className="px-4 py-2 border text-center">
-                {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) + ' stars' : null}
+                {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) : null}
               </td>
               <td className="px-4 py-2 border text-center">
                 {record.userVotings.length > 0 ? 'Level ' + Math.max(...record.userVotings.map(voting => voting.voteLevel)) : null}
               </td>
               <td className="px-4 py-2 border text-center">
                 <button
-                  className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded"
+                  className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold px-2 py-1 rounded"
                 >
                   <Link href={`/dashboard/record/${record.id}`}>
                     View Details
@@ -176,11 +176,11 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         </tbody>
       </table>
 
-      <div className="flex items-center mt-2 space-x-4">
+      <div className="flex items-center justify-center my-2 space-x-4">
         <button
           onClick={() => setCurrentPage((prevPage) => Math.max(1, prevPage - 1))}
           disabled={currentPage === 1}
-          className="bg-[#F87171] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+          className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
         >
           Previous
         </button>
@@ -190,7 +190,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
         <button
           onClick={() => setCurrentPage((prevPage) => Math.min(currentPage + 1, totalPages))}
           disabled={currentPage >= totalPages}
-          className="bg-[#F87171] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+          className="bg-[#F87171] hover:bg-[#EF4444] text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
         >
           Next
         </button>
