@@ -45,7 +45,7 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
     }, [token]);
 
     return (
-        <>
+        <div className='bg-gray-100 p-4'>
             <AddCamera token={token} />
             <div className="overflow-x-auto mt-6">
                 <table className="min-w-full bg-white">
@@ -79,7 +79,7 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                     </tbody>
                 </table>
             </div>
-        </>
+        </div>
     );
 };
 

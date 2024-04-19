@@ -107,7 +107,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                 placeholder="Filter by name"
                 value={filters.name}
                 onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-                className="px-3 py-2 border border-gray-300 rounded-lg"
+                className="px-3 py-2 border border-gray-300 rounded-lg w-96"
             />
             <select
                 value={filters.roleName}
@@ -133,14 +133,13 @@ export default function UserTable({ token }: { token: string | undefined }) {
     const tableHeader = (
         <thead className="bg-gray-100">
             <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Security Code</th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Email</th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Name</th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Phone</th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Role</th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Status</th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Location</th>
-                {/* <th className="border border-gray-300 px-4 py-2 text-left text-gray-600">Update</th> */}
+                <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Security Code</th>
+                <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Email</th>
+                <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Name</th>
+                <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Phone</th>
+                <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Role</th>
+                <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Status</th>
+                <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Location</th>
             </tr>
         </thead>
     );
@@ -150,7 +149,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-400"
             >
                 Previous
             </button>
@@ -160,7 +159,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage >= totalPages}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-300"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-400"
             >
                 Next
             </button>
@@ -168,45 +167,37 @@ export default function UserTable({ token }: { token: string | undefined }) {
     );
 
     return (
-        <div className='m-3'>
+        <div className='bg-gray-100 p-4'>
             {filterUI}
             {loading ? (
                 <div className="text-center py-4 text-gray-500">Loading...</div>
             ) : users.length > 0 ? (
-                <div className="overflow-x-auto">
-                    <table className="table-auto w-full border-collapse border border-gray-300 bg-white">
+                <div className="overflow-x-auto p-3 bg-white">
+                    <table className="table-auto w-full  border border-gray-300 bg-white">
                         {tableHeader}
                         <tbody>
                             {users.map((user) => (
                                 <tr key={user.id} className="hover:bg-gray-50" onClick={() => handleRowClick(user)}>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.securityCode}</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.email}</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.name}</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.phone}</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.role.roleName}</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.status}</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">{user.locationName}</td>
-                                    {/* <td className="border border-gray-300 px-4 py-2 text-center">
-                                        {
-                                            user.role.roleName !== 'Manager' ? (
-                                                <UpdateUser
-                                                    token={user.token}
-                                                    userId={user.id}
-                                                    user={user}
-                                                    onUpdate={() => {
-                                                        setCurrentPage(currentPage);
-                                                    }}
-                                                />
-                                            ) : null
-                                        }
-                                    </td> */}
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.securityCode}</td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.email}</td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.name}</td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.phone}</td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.role.roleName}</td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                                        <span className={`inline-block px-3 py-1 rounded ${user.status === 'Active' ? 'border border-green-400 text-green-400 bg-green-50' :
+                                                user.status === 'Inactive' ? 'border border-red-500 text-red-500 bg-red-100' :
+                                                    'border-gray-300'
+                                            }`}>{user.status}
+                                        </span>
+                                    </td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.locationName}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
             ) : (
-                <div className="text-center py-4 text-gray-500">No users found</div>
+                <div className="text-center py-4 text-gray-500 font-bold text-2xl">No users found</div>
             )}
             {paginationControls}
             {selectedUser && (

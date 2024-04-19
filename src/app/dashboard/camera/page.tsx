@@ -7,7 +7,7 @@ export default async function Camera({ params }: { params: { locationId: string 
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
   return (
-    <div className='mb-4'>
+    <div className='mb-4 bg-gray-100'>
       <GetCamera token={token}/>
     </div>
   )
