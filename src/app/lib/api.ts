@@ -37,8 +37,8 @@ export async function getLocation(token: string | undefined): Promise<ILocations
     return res.json();
 }
 
-export async function getRecords(token:string | undefined) {
-    const res = await fetch(`${process.env.API_URL}/Record`, {
+export async function getTop5Records(token:string | undefined) {
+    const res = await fetch(`${process.env.API_URL}/Record?Page=1&PageSize=5&SortType=1&ColName=recordTime`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

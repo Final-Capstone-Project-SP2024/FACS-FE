@@ -125,7 +125,7 @@ export default function Chart({ token }: { token: string | undefined }) {
             label: `Incident count by ${interval}`,
             data: data.map((item: any) => item.Count),
             fill: false,
-            borderColor: 'rgb(75, 192, 192)',
+            borderColor: 'rgba(75, 192, 192, 1)',
             tension: 0.1,
           },
         ],
@@ -144,9 +144,9 @@ export default function Chart({ token }: { token: string | undefined }) {
     <div className="w-full h-96 bg-white p-4 rounded-md shadow-md flex flex-col">
       <div className="mb-4 flex flex-wrap">
         <button onClick={() => updateChartData('day')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Day</button>
+        <button onClick={() => updateChartData('last7Days')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Last Week</button>
         <button onClick={() => updateChartData('month')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Month</button>
         <button onClick={() => updateChartData('year')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Year</button>
-        <button onClick={() => updateChartData('last7Days')} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md">Last Week</button>
       </div>
       {chartData ? (
         <div className="flex-grow">

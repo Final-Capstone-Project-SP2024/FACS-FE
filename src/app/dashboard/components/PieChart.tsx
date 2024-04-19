@@ -8,6 +8,7 @@ import {
   Legend,
   ArcElement,
   Title,
+  ChartOptions,
 } from 'chart.js';
 
 ChartJS.register(
@@ -82,28 +83,36 @@ export default function PieChart() {
       });
   }, []);
 
-  const options = {
+  const options: ChartOptions<'pie'> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: 'bottom' as const,
+        labels: {
+          boxWidth: 20,
+          padding: 15,
+        },
       },
       title: {
         display: true,
         text: 'Incident count by Location and Camera',
+        font: {
+          size: 14,
+        },
       },
     },
   };
 
   return (
-    <div className="w-full bg-white p-4 rounded-md shadow-md">
-      {chartData.labels.length > 0 ? (
-        <div className='flex-grow'> 
+    <div className="w-full p-4 bg-white rounded-md shadow-md">
+      <div className="w-64 h-64 md:w-96 md:h-96 lg:w-64 lg:h-64 xl:w-96 xl:h-96 mx-auto">
+        {chartData.labels.length > 0 ? (
           <Pie data={chartData} options={options} />
-        </div>
-      ) : (
-        <p>Loading chart data...</p>
-      )}
+        ) : (
+          <p>Loading chart data...</p>
+        )}
+      </div>
     </div>
   );
 }

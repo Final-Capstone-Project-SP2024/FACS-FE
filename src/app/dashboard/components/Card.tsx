@@ -1,16 +1,17 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import React from 'react'
-import { MdSupervisedUserCircle } from 'react-icons/md';
+import { MdSupervisedUserCircle, MdWorkHistory } from 'react-icons/md';
 import { CiCamera } from "react-icons/ci";
 import { MdLocationOn } from "react-icons/md";
 
-type CardInputType = 'user' | 'camera' | 'location';
+type CardInputType = 'user' | 'camera' | 'location' | 'record';
 
 export default function Card({ input, type, numberAdd }: { input: CardInputType, type: string, numberAdd: string }) {
     const typeIconMap: Record<CardInputType, JSX.Element> = {
         user: <MdSupervisedUserCircle size={24} />,
         camera: <CiCamera size={24} />,
         location: <MdLocationOn size={24} />,
+        record: <MdWorkHistory size={24} />,
     };
 
     return (
