@@ -28,7 +28,6 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
     const [email, setEmail] = useState(user.email);
     const [phone, setPhone] = useState(user.phone);
     const [name, setName] = useState(user.name);
-    // const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         setEmail(user.email);
@@ -36,9 +35,8 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
         setName(user.name);
     }, [user]);
 
-    const handleUpdateUser = async (e: React.FormEvent) => {
+    const handleUpdateUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${userId}`)
         try {
             const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${userId}`, {
                 method: 'PATCH',
@@ -63,41 +61,41 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
     return (
         <>
             {showModal && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
-                    <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-                        <h2 className="text-lg font-bold mb-4">Update User</h2>
-                        <form onSubmit={handleUpdateUser} className="space-y-4">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
+                        <h2 className="text-xl font-semibold mb-4">Update User</h2>
+                        <form onSubmit={handleUpdateUser}>
                             <div className="mb-4">
-                                <label htmlFor="email" className="block mb-1">Email:</label>
+                                <label htmlFor="email" className="block font-medium text-sm text-gray-700">Email:</label>
                                 <input
                                     type="email"
                                     id="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                     required
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="phone" className="block mb-1">Phone:</label>
+                                <label htmlFor="phone" className="block font-medium text-sm text-gray-700">Phone:</label>
                                 <input
                                     type="text"
                                     id="phone"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                     required
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="name" className="block mb-1">Name:</label>
+                                <label htmlFor="name" className="block font-medium text-sm text-gray-700">Name:</label>
                                 <input
                                     type="text"
                                     id="name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                     required
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
                                 />
                             </div>
                             <div className="flex justify-end">

@@ -97,7 +97,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
   }, [token, currentPage, filters]);
 
   const filterUI = (
-    <div className="flex space-x-4 my-4">
+    <div className="flex space-x-4 pb-4">
       <input
         type="date"
         placeholder="From Date"
@@ -162,7 +162,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{record.predictedPercent}</td>
                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
                   <p className={`whitespace-no-wrap inline-block px-2 py-1 rounded 
-                      ${record.recordType.recordTypeName === 'Detection' ? 'border border-green-500 text-green-500 bg-green-100 font-bold' :
+                      ${record.recordType.recordTypeName === 'Detection' ? 'border border-green-500 text-green-500 bg-green-50 font-bold' :
                       record.recordType.recordTypeName === 'ElectricalIncident' ? 'border border-yellow-800 text-yellow-800 bg-yellow-200 font-bold' :
                         record.recordType.recordTypeName === 'AlarmByUser' ? 'border border-red-500 text-red-500 bg-red-100 font-bold' :
                           'border border-gray-300 text-gray-900 bg-gray-100'

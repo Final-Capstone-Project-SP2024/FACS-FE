@@ -25,15 +25,14 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div>
-          <AuthProvider>
-            <Navbar />
-            <div className='flex'>
-              {session && session.user ? <Sidebar /> : null}
-              <main className='flex-grow w-full'>{children}</main>
-            </div>
-          </AuthProvider>
-        </div>
+        <AuthProvider>
+          <Navbar />
+          <div className='flex'>
+            {session && session.user ? <Sidebar /> : null}
+            {/* Add a conditional class to adjust the main content when the sidebar is present */}
+            <main className={`flex-grow w-full ${session && session.user ? 'ml-56' : ''}`}>{children}</main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   )

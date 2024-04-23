@@ -1,16 +1,18 @@
 'use client';
 import React, { useState } from 'react';
 
-export default function AddUser({ token }: { token: string | undefined }) {
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const [showModal, setShowModal] = useState(false);
+export default function AddUser({ token, onUserAdded }: { token: string | undefined, onUserAdded: () => void }) {
+    const [email, setEmail] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
+    const [name, setName] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [showModal, setShowModal] = useState<boolean>(false);
 
-    const handleAddUser = async () => {
+    const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         try {
-            const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User`, {
+            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User`, {
                 method: 'POST',
                 body: JSON.stringify({ email, phone, name, password }),
                 headers: {
@@ -18,19 +20,18 @@ export default function AddUser({ token }: { token: string | undefined }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            if (res.ok) {
-                // Handle success
+
+            if (response.ok) {
                 console.log('User added successfully');
-                setShowModal(false); // Close the modal
+                onUserAdded();
+                setShowModal(false);
             } else {
-                // Handle error
-                console.error('Failed to add user');
+                throw new Error("Failed to add user");
             }
         } catch (error) {
-            console.error('Error adding user:', error);
+            console.error(error);
         }
     };
-
 
     return (
         <div>
@@ -42,47 +43,51 @@ export default function AddUser({ token }: { token: string | undefined }) {
             </button>
 
             {showModal && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
-                    <div className="bg-white p-8 rounded shadow-md">
-                        <h2 className="text-lg font-bold mb-4">Add User</h2>
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
+                        <h2 className="text-xl font-semibold mb-4">Add User</h2>
                         <form onSubmit={handleAddUser}>
                             <div className="mb-4">
-                                <label htmlFor="email">Email:</label>
+                                <label htmlFor="email" className="block font-medium text-sm text-gray-700">Email:</label>
                                 <input
                                     type="email"
                                     id="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                     required
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="phone">Phone:</label>
+                                <label htmlFor="phone" className="block font-medium text-sm text-gray-700">Phone:</label>
                                 <input
                                     type="text"
                                     id="phone"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                     required
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="name">Name:</label>
+                                <label htmlFor="name" className="block font-medium text-sm text-gray-700">Name:</label>
                                 <input
                                     type="text"
                                     id="name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                     required
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="password">Password:</label>
+                                <label htmlFor="password" className="block font-medium text-sm text-gray-700">Password:</label>
                                 <input
                                     type="password"
                                     id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                     required
                                 />
                             </div>

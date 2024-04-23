@@ -129,7 +129,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                     <option value="Inactive">Inactive</option>
                 </select>
             </div>
-            <AddUser token={token} />
+            <AddUser token={token} onUserAdded={fetchUsers}/>
         </div>
     );
 
