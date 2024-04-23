@@ -7,10 +7,12 @@ type Location = {
   locationName: string;
 };
 
-export default function AddCamera({ token }: { token: string | undefined}) {
-  const [status, setStatus] = useState<string>('Active'); // Default
+export default function AddCamera({ token, onCameraAdded  }: { token: string | undefined, onCameraAdded: () => void}) {
+  const [status, setStatus] = useState<string>('Connected'); // Default
   const [destination, setDestination] = useState<string>('');
   const [locationId, setLocationId] = useState<string>('');
+  const [cameraImage, setCameraImage] = useState<File | null>(null);
+  const [cameraName, setCameraName] = useState<string>('cameraName');
   const [listLocations, setListLocations] = useState<Location[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -32,22 +34,34 @@ export default function AddCamera({ token }: { token: string | undefined}) {
     }
   };
 
-  const handleAddCameraToLocation = async () => {
+  const handleAddCameraToLocation = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    const formData = new FormData();
+  
+    formData.append('status', status);
+    formData.append('cameraName', cameraName);
+    formData.append('destination', destination);
+    formData.append('locationId', locationId);
+    if (cameraImage instanceof File) {
+      formData.append('cameraImage', cameraImage, cameraImage.name);
+    }
+        
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
     try {
       const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
         method: 'POST',
-        body: JSON.stringify({
-          status,
-          destination,
-          locationId,
-        }),
+        body: formData,
       });
+      console.log(response)
       if (response.ok) {
         console.log('Camera added successfully');
+        onCameraAdded();
         setShowModal(false);
       }
       if (!response.ok) {
@@ -59,8 +73,16 @@ export default function AddCamera({ token }: { token: string | undefined}) {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCameraImage(file);
+    } else {
+      setCameraImage(null);
+    }
+  }
+
   useEffect(() => {
-    // Fetch list of locations when component mounts
     handleGetListLocations();
   }, []);
 
@@ -88,8 +110,8 @@ export default function AddCamera({ token }: { token: string | undefined}) {
                   className="w-full border rounded p-2 mt-1"
                   required
                 >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
+                  <option value="Connected">Connected</option>
+                  <option value="Disconnected">Disconnected</option>
                 </select>
               </div>
               <div className="mb-4">
@@ -120,6 +142,16 @@ export default function AddCamera({ token }: { token: string | undefined}) {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="cameraImage" className="block font-medium text-sm text-gray-700">Camera Image:</label>
+                <input
+                  type="file"
+                  id="cameraImage"
+                  onChange={handleFileChange}
+                  className="w-full border rounded p-2 mt-1"
+                  required
+                />
               </div>
               <div className="flex justify-end">
                 <button

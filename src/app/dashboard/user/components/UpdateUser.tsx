@@ -38,7 +38,7 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
 
     const handleUpdateUser = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        console.log(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${userId}`)
         try {
             const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${userId}`, {
                 method: 'PATCH',
@@ -64,37 +64,40 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
         <>
             {showModal && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
-                    <div className="bg-white p-8 rounded shadow-md">
+                    <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
                         <h2 className="text-lg font-bold mb-4">Update User</h2>
-                        <form onSubmit={handleUpdateUser}>
+                        <form onSubmit={handleUpdateUser} className="space-y-4">
                             <div className="mb-4">
-                                <label htmlFor="email">Email:</label>
+                                <label htmlFor="email" className="block mb-1">Email:</label>
                                 <input
                                     type="email"
                                     id="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="phone">Phone:</label>
+                                <label htmlFor="phone" className="block mb-1">Phone:</label>
                                 <input
                                     type="text"
                                     id="phone"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
                                     required
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="name">Name:</label>
+                                <label htmlFor="name" className="block mb-1">Name:</label>
                                 <input
                                     type="text"
                                     id="name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
                                 />
                             </div>
                             <div className="flex justify-end">
@@ -111,7 +114,6 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
                                 >
                                     Update User
                                 </button>
-                                
                             </div>
                         </form>
                     </div>

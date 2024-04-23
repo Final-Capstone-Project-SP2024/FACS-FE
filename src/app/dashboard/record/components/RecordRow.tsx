@@ -34,6 +34,10 @@ type RecordProps = {
   token: string | undefined;
 };
 
+function addSpacesToCamelCase(text: string) {
+  return text.replace(/([A-Z])/g, ' $1').trim();
+}
+
 const handleGetRecords = async (
   token: string | undefined,
   page: number,
@@ -123,59 +127,69 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
   );
 
   return (
-    <>
+    <div className='bg-gray-100 p-4'>
       {filterUI}
-      <table className="table-auto w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100 border-b border-gray-200">
-            <th className="px-4 py-2 border">Status</th>
-            <th className="px-4 py-2 border">Record Time</th>
-            <th className="px-4 py-2 border">User Rating(%)</th>
-            <th className="px-4 py-2 border">Predicted(%)</th>
-            <th className="px-4 py-2 border">Record Type Name</th>
-            <th className="px-4 py-2 border">Ratings</th>
-            <th className="px-4 py-2 border">Most Votings</th>
-            <th className="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {records.map((record, index) => (
-            <tr key={index} className="border-b border-gray-200">
-              <td className="px-4 py-2 border text-center">{record.status}</td>
-              <td className="px-4 py-2 border text-center">
-                {new Date(record.recordTime).toLocaleString('en-GB', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                  hour12: false,
-                })}
-              </td>
-              <td className="px-4 py-2 border text-center">{record.userRatingPercent}</td>
-              <td className="px-4 py-2 border text-center">{record.predictedPercent}</td>
-              <td className="px-4 py-2 border text-center">{record.recordType.recordTypeName}</td>
-              <td className="px-4 py-2 border text-center">
-                {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) : null}
-              </td>
-              <td className="px-4 py-2 border text-center">
-                {record.userVotings.length > 0 ? 'Level ' + Math.max(...record.userVotings.map(voting => voting.voteLevel)) : null}
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded"
-                >
-                  <Link href={`/dashboard/record/${record.id}`}>
-                    View Details
-                  </Link>
-                </button>
-              </td>
+      <div className="overflow-x-auto p-3 bg-white">
+        <table className="table-auto w-full  border border-gray-300 bg-white">
+          <thead className="bg-gray-100">
+            <tr className="w-full border-gray-300 border-b py-8">
+              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Status</th>
+              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Record Time</th>
+              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">User Rating</th>
+              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Predicted(%)</th>
+              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Record Type</th>
+              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Ratings</th>
+              {/* <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Most Votings</th> */}
+              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            {records.map((record, index) => (
+              <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{record.status}</td>
+                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                  {new Date(record.recordTime).toLocaleString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  })}
+                </td>
+                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{record.userRatingPercent}</td>
+                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{record.predictedPercent}</td>
+                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                  <p className={`whitespace-no-wrap inline-block px-2 py-1 rounded 
+                      ${record.recordType.recordTypeName === 'Detection' ? 'border border-green-500 text-green-500 bg-green-100 font-bold' :
+                      record.recordType.recordTypeName === 'ElectricalIncident' ? 'border border-yellow-800 text-yellow-800 bg-yellow-200 font-bold' :
+                        record.recordType.recordTypeName === 'AlarmByUser' ? 'border border-red-500 text-red-500 bg-red-100 font-bold' :
+                          'border border-gray-300 text-gray-900 bg-gray-100'
+                    }`}>
+                    {addSpacesToCamelCase(record.recordType.recordTypeName)}
+                  </p>
+                </td>
+                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                  {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) : null}
+                </td>
+                {/* <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                {record.userVotings.length > 0 ? 'Level ' + Math.max(...record.userVotings.map(voting => voting.voteLevel)) : null}
+              </td> */}
+                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded"
+                  >
+                    <Link href={`/dashboard/record/${record.id}`}>
+                      View Details
+                    </Link>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="flex items-center justify-center my-2 space-x-4">
         <button
           onClick={() => setCurrentPage((prevPage) => Math.max(1, prevPage - 1))}
@@ -195,7 +209,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
           Next
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

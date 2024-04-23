@@ -41,6 +41,12 @@ export default function Sidebar() {
                     <h1 className='text-base font-bold'>Record</h1>
                 </div>
             </Link>
+            {/* <Link href="/dashboard/incident">
+                <div className={`flex items-center w-full h-16 gap-1 px-5 cursor-pointer rounded ${pathname === '/dashboard/incident' ? 'bg-blue-300 text-white' : 'text-black hover:bg-blue-500 hover:text-white'}`}>
+                    <MdWorkHistory className='text-xl mr-2' />
+                    <h1 className='text-base font-bold'>Incidents</h1>
+                </div>
+            </Link> */}
         </div>
     )
 }

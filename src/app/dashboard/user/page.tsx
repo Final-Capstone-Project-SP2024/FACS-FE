@@ -20,9 +20,6 @@ export default async function User({ searchParams }: SearchParamsProps, token: s
 
   return (
     <div className='container mx-auto'>
-      <div className="mr-6 float-right">
-        <AddUser token={token} />
-      </div>
       <UserTable token={token} />
     </div>
   );

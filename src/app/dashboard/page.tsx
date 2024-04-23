@@ -17,7 +17,7 @@ export default async function page({ params }: { params: { locationId: string } 
   const listCameras: ICameras = await getCamera(token);
   const camera = listCameras?.data;
   const totalCamera = camera?.length;
-  const activeCameras = camera.filter(camera => camera.status === 'Active').length;
+  const activeCameras = camera.filter(camera => camera.status === 'Connected').length;
   const disconnectedCameras = camera.filter(camera => camera.status === 'Disconnected');
 
   const listLocations: ILocations = await getLocation(token);
@@ -77,9 +77,9 @@ export default async function page({ params }: { params: { locationId: string } 
                     </td>
                     <td className="px-5 py-2 border-b border-gray-200 text-sm">
                       <p className={`whitespace-no-wrap inline-block px-2 py-1 rounded 
-                      ${record.recordType.recordTypeName === 'Detection' ? 'border border-green-500 text-green-500 bg-green-100' :
+                      ${record.recordType.recordTypeName === 'Detection' ? 'border border-green-500 text-green-500 bg-green-100 font-bold' :
                           record.recordType.recordTypeName === 'ElectricalIncident' ? 'border border-yellow-800 text-yellow-800 bg-yellow-200 font-bold' :
-                            record.recordType.recordTypeName === 'AlarmByUser' ? 'border border-red-500 text-red-500 bg-red-100' :
+                            record.recordType.recordTypeName === 'AlarmByUser' ? 'border border-red-500 text-red-500 bg-red-100 font-bold' :
                               'border border-gray-300 text-gray-900 bg-gray-100'
                         }`}>
                         {addSpacesToCamelCase(record.recordType.recordTypeName)}

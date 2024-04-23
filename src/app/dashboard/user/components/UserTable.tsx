@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import UpdateUser from './UpdateUser';
+import AddUser from './AddUser';
 
 type ApiResponse = {
     data: {
@@ -75,6 +76,13 @@ export default function UserTable({ token }: { token: string | undefined }) {
         roleName: '',
         status: '',
     });
+    const fetchUsers = async () => {
+        setLoading(true);
+        const { users: fetchedUsers, totalPages: newTotalPages } = await handleGetUser(token, currentPage, filters);
+        setUsers(fetchedUsers);
+        setTotalPages(newTotalPages);
+        setLoading(false);
+    };
 
     const [showModal, setShowModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -89,44 +97,39 @@ export default function UserTable({ token }: { token: string | undefined }) {
     };
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            setLoading(true);
-            const { users: fetchedUsers, totalPages: newTotalPages } = await handleGetUser(token, currentPage, filters);
-            setUsers(fetchedUsers);
-            setTotalPages(newTotalPages);
-            setLoading(false);
-        };
-
         fetchUsers();
     }, [token, currentPage, filters]);
 
     const filterUI = (
-        <div className="flex flex-wrap space-x-4 mb-4">
-            <input
-                type="text"
-                placeholder="Filter by name"
-                value={filters.name}
-                onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-                className="px-3 py-2 border border-gray-300 rounded-lg w-96"
-            />
-            <select
-                value={filters.roleName}
-                onChange={(e) => setFilters({ ...filters, roleName: e.target.value })}
-                className="px-3 py-2 border border-gray-300 rounded-lg"
-            >
-                <option value="">Select Role</option>
-                <option value="Manager">Manager</option>
-                <option value="User">User</option>
-            </select>
-            <select
-                value={filters.status}
-                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                className="px-3 py-2 border border-gray-300 rounded-lg"
-            >
-                <option value="">Select Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-            </select>
+        <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-wrap space-x-4">
+                <input
+                    type="text"
+                    placeholder="Filter by name"
+                    value={filters.name}
+                    onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+                    className="px-3 py-2 border border-gray-300 rounded-lg"
+                />
+                <select
+                    value={filters.roleName}
+                    onChange={(e) => setFilters({ ...filters, roleName: e.target.value })}
+                    className="px-3 py-2 border border-gray-300 rounded-lg"
+                >
+                    <option value="">Select Role</option>
+                    <option value="Manager">Manager</option>
+                    <option value="User">User</option>
+                </select>
+                <select
+                    value={filters.status}
+                    onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                    className="px-3 py-2 border border-gray-300 rounded-lg"
+                >
+                    <option value="">Select Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <AddUser token={token} />
         </div>
     );
 
@@ -184,9 +187,9 @@ export default function UserTable({ token }: { token: string | undefined }) {
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.phone}</td>
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.role.roleName}</td>
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
-                                        <span className={`inline-block px-3 py-1 rounded ${user.status === 'Active' ? 'border border-green-400 text-green-400 bg-green-50' :
-                                                user.status === 'Inactive' ? 'border border-red-500 text-red-500 bg-red-100' :
-                                                    'border-gray-300'
+                                        <span className={`inline-block px-3 py-1 rounded font-bold ${user.status === 'Active' ? 'border border-green-400 text-green-400 bg-green-50' :
+                                            user.status === 'Inactive' ? 'border border-red-500 text-red-500 bg-red-100' :
+                                                'border-gray-300'
                                             }`}>{user.status}
                                         </span>
                                     </td>
@@ -205,6 +208,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                     userId={selectedUser.id}
                     user={selectedUser}
                     onUpdate={() => {
+                        fetchUsers();
                     }}
                     token={token}
                     showModal={showModal}
