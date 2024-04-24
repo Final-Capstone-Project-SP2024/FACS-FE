@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import AddCamera from './AddCamera';
+import UpdateCamera from './UpdateCamera';
 
 type Camera = {
     id: string;
@@ -179,6 +180,7 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Camera Name</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Camera Destination</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Status</th>
+                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Update</th>
                         </tr>
                     </thead>
                     <tbody className="text-gray-700">
@@ -205,6 +207,9 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                                         }>
                                             {camera.status}
                                         </span>
+                                    </td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left ">
+                                        <UpdateCamera/>
                                     </td>
                                 </tr>
                             ))

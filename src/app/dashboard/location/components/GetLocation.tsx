@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import AddLocation from './AddLocation';
+import UpdateLocation from './UpdateLocation';
 
 export default function GetLocation({ token }: { token: string | undefined }) {
     const [locations, setLocations] = useState<any[]>([]);
@@ -92,6 +93,7 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Location Name</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Number of Cameras</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Number of Security</th>
+                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Update</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -105,6 +107,7 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                                 </td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfCamera}</td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfSecurity}</td>
+                                <td className="border-b-2 border-gray-200 px-4 py-2 text-left"><UpdateLocation /></td>
                             </tr>
                         ))}
                     </tbody>

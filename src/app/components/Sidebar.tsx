@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { FaCamera, FaRegUser, FaSignOutAlt } from 'react-icons/fa';
 import { MdLocationCity, MdWorkHistory, MdSettings } from 'react-icons/md';
+import Setting from './Setting';
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -64,10 +65,11 @@ export default function Sidebar() {
                 </Link>
             </div>
             <div className={`fixed ${isScrolled ? 'bottom-0' : 'bottom-0'} mt-auto flex flex-col justify-between w-56 overflow-auto border-r border-gray-300 bg-white transition-all duration-300 ease-in-out`}>
-                <Link href="/dashboard/setting" className={`flex items-center w-full h-16 gap-1 px-5 cursor-pointer rounded ${pathname === '/dashboard/setting' ? 'bg-blue-300 text-white' : 'text-black hover:bg-blue-500 hover:text-white'}`}>
+                {/* <Link href="/dashboard/setting" className={`flex items-center w-full h-16 gap-1 px-5 cursor-pointer rounded ${pathname === '/dashboard/setting' ? 'bg-blue-300 text-white' : 'text-black hover:bg-blue-500 hover:text-white'}`}>
                     <MdSettings className='text-xl mr-2' />
                     <h1 className='text-base font-bold'>Settings</h1>
-                </Link>
+                </Link> */}
+                <Setting />
                 <button
                     onClick={() => signOut({ callbackUrl: '/' })}
                     className="flex items-center w-full h-16 gap-1 px-5 cursor-pointer text-gray-500 hover:text-gray-700 font-bold rounded"

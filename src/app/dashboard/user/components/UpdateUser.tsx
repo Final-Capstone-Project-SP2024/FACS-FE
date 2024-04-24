@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import InactiveUser from './InactiveUser';
 
 type User = {
     id: string;
@@ -108,10 +109,11 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
                                 </button>
                                 <button
                                     type="submit"
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-4 rounded"
                                 >
                                     Update User
                                 </button>
+                                <InactiveUser />
                             </div>
                         </form>
                     </div>
