@@ -25,9 +25,14 @@ export default function Setting() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <MdSettings className='text-xl mr-2 cursor-pointer hover:text-gray-600' onClick={toggleModal} />
-      <h1 className='text-base font-bold'>Settings</h1>
+    <div className="flex flex-col ">
+      <button
+        onClick={toggleModal}
+        className="flex items-center gap-1 px-5 cursor-pointer text-gray-500 hover:text-gray-700 font-bold rounded"
+      >
+        <MdSettings className="text-xl mr-2" />
+        <span>Settings</span>
+      </button>
       {isModalOpen && (
         <div className='fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50'>
           <div className='bg-white p-5 rounded-lg shadow-lg w-96'>
