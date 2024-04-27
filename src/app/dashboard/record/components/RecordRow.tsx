@@ -98,20 +98,24 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
 
   const filterUI = (
     <div className="flex space-x-4 pb-4">
-      <input
-        type="date"
-        placeholder="From Date"
-        value={filters.fromDate}
-        onChange={(e) => setFilters({ ...filters, fromDate: e.target.value })}
-        className="px-2 py-1 border border-gray-300 rounded"
-      />
-      <input
-        type="date"
-        placeholder="To Date"
-        value={filters.toDate}
-        onChange={(e) => setFilters({ ...filters, toDate: e.target.value })}
-        className="px-2 py-1 border border-gray-300 rounded"
-      />
+      <div className="flex items-center">
+        <input
+          type="date"
+          placeholder="From Date"
+          value={filters.fromDate}
+          onChange={(e) => setFilters({ ...filters, fromDate: e.target.value })}
+          className="px-2 py-1 border border-gray-300 rounded mr-2"
+        />
+        <span className="mx-2">-</span>
+        <input
+          type="date"
+          placeholder="To Date"
+          value={filters.toDate}
+          onChange={(e) => setFilters({ ...filters, toDate: e.target.value })}
+          className="px-2 py-1 border border-gray-300 rounded ml-2"
+        />
+      </div>
+
       <select
         value={filters.status}
         onChange={(e) => setFilters({ ...filters, status: e.target.value })}
@@ -135,10 +139,10 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
             <tr className="w-full border-gray-300 border-b py-8">
               <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Status</th>
               <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Record Time</th>
-              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">User Rating</th>
+              {/* <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">User Rating</th> */}
               <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Predicted(%)</th>
               <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Record Type</th>
-              <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Ratings</th>
+              {/* <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Ratings</th> */}
               {/* <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Most Votings</th> */}
               <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Actions</th>
             </tr>
@@ -158,7 +162,7 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
                     hour12: false,
                   })}
                 </td>
-                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{record.userRatingPercent}</td>
+                {/* <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{record.userRatingPercent}</td> */}
                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{record.predictedPercent}</td>
                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
                   <p className={`whitespace-no-wrap inline-block px-2 py-1 rounded 
@@ -170,9 +174,9 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
                     {addSpacesToCamelCase(record.recordType.recordTypeName)}
                   </p>
                 </td>
-                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                {/* <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
                   {record.userRatings.length > 0 ? Math.max(...record.userRatings.map(rating => rating.rating)) : null}
-                </td>
+                </td> */}
                 {/* <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
                 {record.userVotings.length > 0 ? 'Level ' + Math.max(...record.userVotings.map(voting => voting.voteLevel)) : null}
               </td> */}
