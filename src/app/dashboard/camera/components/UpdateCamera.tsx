@@ -57,7 +57,7 @@ export default function UpdateCamera() {
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
             <h2 className="text-xl font-semibold mb-4">Update Camera</h2>
             <form onSubmit={handleUpdateCamera}>
               <div className="mb-4">

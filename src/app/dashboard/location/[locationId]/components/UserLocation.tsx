@@ -52,27 +52,31 @@ export default function UserLocation({ locationId, token }: { locationId: string
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <div className='container mx-auto'>
-            <h1 className="text-2xl font-bold mt-4">Location Detail</h1>
-            <div className="mb-2 float-right">
-                <AddUserToLocation locationId={locationId} token={token} updateUserLocations={updateUserLocations} />
+        <div className='bg-gray-100 p-4'>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-bold mt-4 ml-2">Location Detail</h1>
+                <div>
+                    <AddUserToLocation locationId={locationId} token={token} updateUserLocations={updateUserLocations} />
+                </div>
             </div>
-            <table className="min-w-full divide-y divide-gray-200 bg-gray-100 border-b border-gray-200">
-                <thead>
-                    <tr>
-                        <th className="px-6 py-3 text-center text-xs border">Index</th>
-                        <th className="px-6 py-3 text-center text-xs border">User Name</th>
-                    </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                    {locations.map((location, index) => (
-                        <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center">{index + 1}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center">{location.name}</td>
+            <div className="overflow-x-auto p-3 bg-white">
+                <table className="min-w-full divide-y divide-gray-200 bg-gray-100 border-b border-gray-200">
+                    <thead>
+                        <tr>
+                            <th className="px-6 py-3 text-center text-xs border">Index</th>
+                            <th className="px-6 py-3 text-center text-xs border">User Name</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {locations.map((location, index) => (
+                            <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center">{index + 1}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center">{location.name}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
