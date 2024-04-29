@@ -1,13 +1,14 @@
 'use client'
 import { getCamera } from '@/app/lib';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 type Location = {
   locationId: string;
   locationName: string;
 };
 
-export default function AddCamera({ token, onCameraAdded  }: { token: string | undefined, onCameraAdded: () => void}) {
+export default function AddCamera({ token, onCameraAdded }: { token: string | undefined, onCameraAdded: () => void }) {
   const [status, setStatus] = useState<string>('Connected'); // Default
   const [destination, setDestination] = useState<string>('');
   const [locationId, setLocationId] = useState<string>('');
@@ -36,9 +37,9 @@ export default function AddCamera({ token, onCameraAdded  }: { token: string | u
 
   const handleAddCameraToLocation = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
-  
+
     formData.append('status', status);
     formData.append('cameraName', cameraName);
     formData.append('destination', destination);
@@ -46,7 +47,7 @@ export default function AddCamera({ token, onCameraAdded  }: { token: string | u
     if (cameraImage instanceof File) {
       formData.append('cameraImage', cameraImage, cameraImage.name);
     }
-        
+
     // for (let [key, value] of formData.entries()) {
     //   console.log(`${key}: ${value}`);
     // }
@@ -60,12 +61,14 @@ export default function AddCamera({ token, onCameraAdded  }: { token: string | u
       });
       console.log(response)
       if (response.ok) {
-        console.log('Camera added successfully');
+        toast.success('Camera added successfully');
         onCameraAdded();
         setShowModal(false);
       }
       if (!response.ok) {
-        throw new Error("Failed to add camera");
+        const errorData = await response.json();
+        toast.error(errorData.Message || 'Failed to add camera');
+        setShowModal(false);
       }
       setShowModal(false);
     } catch (error) {

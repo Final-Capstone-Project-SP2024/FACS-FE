@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function AddUser({ token, onUserAdded }: { token: string | undefined, onUserAdded: () => void }) {
     const [email, setEmail] = useState<string>('');
@@ -22,11 +23,12 @@ export default function AddUser({ token, onUserAdded }: { token: string | undefi
             });
 
             if (response.ok) {
-                console.log('User added successfully');
+                toast.success('User added successfully');
                 onUserAdded();
                 setShowModal(false);
             } else {
-                throw new Error("Failed to add user");
+                const errorData = await response.json();
+                toast.error(errorData.Message || 'Failed to add user!');
             }
         } catch (error) {
             console.error(error);

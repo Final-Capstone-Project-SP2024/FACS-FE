@@ -1,6 +1,8 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import InactiveUser from './InactiveUser';
+import { toast } from 'react-toastify';
+import ActiveUser from './ActiveUser';
 
 type User = {
     id: string;
@@ -19,10 +21,10 @@ type User = {
 type UpdateUserProps = {
     userId: string;
     user: User;
-    onUpdate: Function;
     token: string | undefined;
     showModal: boolean;
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+    onUpdate: () => void;
 };
 
 export default function UpdateUser({ userId, user, onUpdate, token, showModal, setShowModal }: UpdateUserProps) {
@@ -48,11 +50,12 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
                 },
             });
             if (res.ok) {
-                console.log('User updated successfully');
+                toast.success('User updated successfully');
                 onUpdate();
                 setShowModal(false);
             } else {
-                console.error('Failed to update user');
+                const errorData = await res.json();
+                toast.error(errorData.Message || 'Failed to update camera');
             }
         } catch (error) {
             console.error('Error updating user:', error);
@@ -113,7 +116,14 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
                                 >
                                     Update User
                                 </button>
-                                <InactiveUser />
+                                {/* <InactiveUser token={token} userId={user.id} onUserUpdated={onUpdate} /> */}
+                                {user.status === 'Inactive' && (
+                                    <ActiveUser token={token} userId={user.id} onUserUpdated={onUpdate} />
+                                )}
+
+                                {user.status === 'Active' && (
+                                    <InactiveUser token={token} userId={user.id} onUserUpdated={onUpdate} />
+                                )}
                             </div>
                         </form>
                     </div>

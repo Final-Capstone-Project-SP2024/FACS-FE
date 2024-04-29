@@ -6,6 +6,10 @@ import AuthProvider from '@/context/AuthProvider'
 import Sidebar from './components/Sidebar'
 import { getServerSession } from 'next-auth'
 import { authOptions } from './api/auth/[...nextauth]/options'
+// Toast;
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify'
+// import Toast from "./components/Toast";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,15 +25,25 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
   console.log(session?.user);
-  
+
   return (
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
           <Navbar />
+          <ToastContainer
+            position="top-right"
+            autoClose={1500}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           <div className='flex'>
             {session && session.user ? <Sidebar /> : null}
-            {/* Add a conditional class to adjust the main content when the sidebar is present */}
             <main className={`flex-grow w-full ${session && session.user ? 'ml-56' : ''}`}>{children}</main>
           </div>
         </AuthProvider>
