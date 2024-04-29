@@ -92,7 +92,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
             setSelectedUser(user);
             setShowModal(true);
         } else {
-            console.log('Update not allowed for Manager role.');
+            console.log('Update is not allowed for Manager role.');
         }
     };
 

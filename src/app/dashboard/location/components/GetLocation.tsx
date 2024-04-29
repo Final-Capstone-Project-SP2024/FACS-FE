@@ -38,6 +38,8 @@ export default function GetLocation({ token }: { token: string | undefined }) {
         }
     };
 
+    const [showModal, setShowModal] = useState(false);
+
     useEffect(() => {
         fetchLocations();
     }, [token]);
@@ -107,7 +109,18 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                                 </td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfCamera}</td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfSecurity}</td>
-                                <td className="border-b-2 border-gray-200 px-4 py-2 text-left"><UpdateLocation /></td>
+                                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                                    <UpdateLocation 
+                                        locationId={location.id} //chua truyen dc id
+                                        location={location}
+                                        onUpdate={() => {
+                                            fetchLocations();
+                                        }}
+                                        token={token}
+                                        showModal={showModal}
+                                        setShowModal={setShowModal}
+                                    />
+                                </td>
                             </tr>
                         ))}
                     </tbody>

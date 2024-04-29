@@ -7,57 +7,45 @@ type Location = {
     image: string; // Assuming the image is stored as a URL string
 };
 
-export default function UpdateLocation() {
-  // { location, token, onLocationUpdated }: { location: Location, token: string | undefined, onLocationUpdated: () => void }
-    // const [locationName, setLocationName] = useState<string>(location.name);
-    // const [locationImage, setLocationImage] = useState<File | null>(null);
-  const [showModal, setShowModal] = useState<boolean>(false);
+type UpdateLocationProps = {
+  locationId: string;
+  location: Location;
+  onUpdate: Function;
+  token: string | undefined;
+  showModal: boolean;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-  // useEffect(() => {
-  //   setLocationName(location.name);
-  // }, [location]);
+export default function UpdateLocation({ locationId, location, onUpdate, token, showModal, setShowModal }: UpdateLocationProps) {
+  const [name, setName] = useState(location.name);
+
+  useEffect(() => {
+    setName(location.name);
+  }, [location]);
 
   const handleUpdateLocation = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
-    // const formData = new FormData();
-    // formData.append('locationName', locationName);
-    // if (locationImage) {
-    //   formData.append('locationImage', locationImage, locationImage.name);
-    // }
-  
-    // try {
-    //   const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${location.id}`, {
-    //     method: 'PATCH',
-    //     body: formData,
-    //     headers: {
-    //       'Authorization': `Bearer ${token}`,
-    //     },
-    //   });
-    //   if (response.ok) {
-    //     console.log('Location updated successfully');
-    //     onLocationUpdated();
-    //     setShowModal(false);
-    //   } else {
-    //     throw new Error("Failed to update location");
-    //   }
-    // } catch (error) {
-    //   console.error('Error updating location:', error);
-    // }
-  };
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // setLocationName(e.target.value);
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // setLocationImage(file);
-    } else {
-      // setLocationImage(null);
+    
+    try {
+      const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ name }),
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        console.log('Location updated successfully');
+        onUpdate();
+        setShowModal(false);
+      } else {
+        throw new Error("Failed to update location");
+      }
+    } catch (error) {
+      console.error('Error updating location:', error);
+      console.log(locationId);
     }
-  }
+  };
 
   return (
     <div>
@@ -78,8 +66,8 @@ export default function UpdateLocation() {
                 <input
                   type="text"
                   id="locationName"
-                  // value={locationName}
-                  onChange={handleNameChange}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="w-full border rounded p-2 mt-1"
                   required
                 />

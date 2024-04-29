@@ -3,16 +3,16 @@ import React, { useState, useEffect } from 'react';
 import AddCamera from './AddCamera';
 import UpdateCamera from './UpdateCamera';
 
-type Camera = {
-    id: string;
-    cameraName: string;
-    cameraDestination: string;
-    status: string;
-};
+// type Camera = {
+//     id: string;
+//     cameraName: string;
+//     cameraDestination: string;
+//     status: string;
+// };
 
 const GetCamera = ({ token }: { token: string | undefined }) => {
-    const [cameras, setCameras] = useState<Camera[]>([]);
-    const [filteredCameras, setFilteredCameras] = useState<Camera[]>([]);
+    const [cameras, setCameras] = useState<any[]>([]);
+    const [filteredCameras, setFilteredCameras] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -82,6 +82,8 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
 
         fetchCameras();
     }, [token, currentPage, itemsPerPage]);
+
+    const [showModal, setShowModal] = useState(false);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -209,7 +211,16 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                                         </span>
                                     </td>
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left ">
-                                        <UpdateCamera/>
+                                        <UpdateCamera
+                                            cameraId={camera.id} //chua truyen dc id
+                                            camera={camera}
+                                            onUpdate={() => {
+                                                refreshCameras();
+                                            }}
+                                            token={token}
+                                            showModal={showModal}
+                                            setShowModal={setShowModal}
+                                        />
                                     </td>
                                 </tr>
                             ))
