@@ -58,7 +58,7 @@ export default function LocationDetails({ locationId, token }: { locationId: str
                 const storage = getStorage(app);
                 const newCameraImages: CameraImages = {};
                 for (const camera of data.data.cameraInLocations) {
-                    const cameraRef = ref(storage, `CameraImage/${camera.cameraImage}`);
+                    const cameraRef = ref(storage, `cameraImage/${camera.cameraImage}`);
                     newCameraImages[camera.cameraId] = await getDownloadURL(cameraRef);
                 }
                 setCameraImages(newCameraImages);
