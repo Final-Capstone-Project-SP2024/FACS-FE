@@ -38,7 +38,7 @@ export async function getLocation(token: string | undefined): Promise<ILocations
 }
 
 export async function getTop5Records(token:string | undefined) {
-    const res = await fetch(`${process.env.API_URL}/Record?Page=1&PageSize=5&SortType=1&ColName=recordTime`, {
+    const res = await fetch(`${process.env.API_URL}/Record?Page=1&PageSize=5&SortType=1&ColName=recordTime&FromDate=2020-1-1&ToDate=2030-1-1`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

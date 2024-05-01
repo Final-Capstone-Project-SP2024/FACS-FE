@@ -43,7 +43,7 @@ const handleGetRecords = async (
   page: number,
   filters: { status?: string; fromDate?: string; toDate?: string }
 ) => {
-  var url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=${page}&PageSize=10`;
+  var url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=${page}&PageSize=10&SortType=1&ColName=recordTime&FromDate=2020-1-1&ToDate=2030-1-1`;
 
   if (filters.status) {
     url += `&Status=${encodeURIComponent(filters.status)}`;
