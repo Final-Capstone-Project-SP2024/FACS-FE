@@ -38,13 +38,13 @@ export default function SignIn() {
                     <form className="mt-6" onSubmit={(e) => handleSignin(e)}>
                         <div>
                             <label htmlFor="securityCode" className="block text-gray-700">Security Code</label>
-                            <input 
-                                type="text" 
-                                id="securityCode" 
-                                placeholder="Enter Security Code" 
-                                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none" 
-                                autoFocus 
-                                required 
+                            <input
+                                type="text"
+                                id="securityCode"
+                                placeholder="Enter Security Code"
+                                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                autoFocus
+                                required
                                 // value={securityCode} 
                                 onChange={(e) => setSecurityCode(e.target.value)}
                             />
@@ -52,19 +52,15 @@ export default function SignIn() {
 
                         <div className="mt-4">
                             <label htmlFor="password" className="block text-gray-700">Password</label>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                placeholder="Enter Password" 
-                                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none" 
-                                required 
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Enter Password"
+                                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                required
                                 // value={password} 
                                 onChange={(e) => setPassword(e.target.value)}
                             />
-                        </div>
-
-                        <div className="text-right mt-2">
-                            <a href="#" className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Forgot Password?</a>
                         </div>
 
                         <button className="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-6">
