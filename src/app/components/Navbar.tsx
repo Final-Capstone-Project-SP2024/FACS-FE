@@ -19,23 +19,14 @@ const Navbar = () => {
       <nav className="container mx-auto flex flex-row justify-between items-center py-3 px-4">
         <div className="flex items-center gap-2">
           <Link href="/dashboard" className="flex items-center text-gray-700 hover:text-gray-900">
-            <Image src={logo} alt="Logo" width={120} height={120} />
+            <Image src={logo} alt="Logo" width={200} height={200} />
           </Link>
-          <div className="relative w-full max-w-xl ml-20">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="border border-gray-300 rounded-md py-1 pl-10 pr-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <CiSearch className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </div>
+          <div className="relative w-full max-w-xl ml-20"></div>
         </div>
         <div className="flex items-center gap-4">
           {session?.user ? (
             <div className="relative">
               <div className="flex items-center gap-4">
-                <IoIosNotifications className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
-
                 <div
                   className="rounded-full overflow-hidden w-10 h-10 cursor-pointer"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
