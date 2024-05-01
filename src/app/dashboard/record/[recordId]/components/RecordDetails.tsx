@@ -97,12 +97,23 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
     setIsImageMain(false);
   };
 
+  let recordTypeDescription;
+  if (record.recordType === 1) {
+    recordTypeDescription = 'AI Detection';
+  } else if (record.recordType === 2) {
+    recordTypeDescription = 'Electrical Incident';
+  } else if (record.recordType === 3) {
+    recordTypeDescription = 'Alarm By User';
+  } else {
+    recordTypeDescription = 'Unknown';
+  }
+
   return (
     <div className="container bg-gray-100 p-4 mx-auto">
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="font-bold text-3xl mb-2">Record Details</h2>
+        <h2 className="font-bold text-3xl mb-2">Record Details - {recordTypeDescription}</h2>
         <div className='flex flex-row gap-2'>
-          <div className="w-1/2">
+          <div className="w-1/2 mr-6">
             <div>
               {isImageMain ? (
                 <Image src={mainMediaUrl} alt="Main Media" width={1000} height={1000} className="rounded-lg shadow-md" priority />
@@ -138,12 +149,12 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
               )}
             </div>
           </div>
-          <div className="w-1/2">
-            <p className="mb-2">{record.cameraName}</p>
-            <p className="mb-2">Camera Destination: {record.cameraDestination}</p>
-            <p className="mb-2">Predicted Percent: {record.predictedPercent}%</p>
-            <p className="mb-2">Finish Time: {record.finishTime}</p>
-            <p className="mb-2">Status: {record.status}</p>
+          <div className="flex-1">
+            <p className="mb-2 text-3xl"><span className="font-semibold"> {record.cameraName}</span></p>
+            <p className="mb-2 text-lg"><span className="font-semibold">Camera Destination:</span> {record.cameraDestination}</p>
+            <p className="mb-2 text-lg"><span className="font-semibold">Predicted: </span> {parseFloat(record.predictedPercent).toFixed(2)}% - {record.recommendAlarmLevel}</p>
+            <p className="mb-2 text-lg"><span className="font-semibold">Time:</span> {record.recordTime} - {record.finishTime}</p>
+            <p className="mb-2 text-lg"><span className="font-semibold">Status:</span> {record.status}</p>
           </div>
         </div>
       </div>

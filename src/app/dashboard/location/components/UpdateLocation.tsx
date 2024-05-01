@@ -1,14 +1,15 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 type Location = {
-    id: string;
-    name: string;
-    image: string; // Assuming the image is stored as a URL string
+  locationId: string;
+  locationName: string;
 };
 
 type UpdateLocationProps = {
   locationId: string;
+  locationName: string;
   location: Location;
   onUpdate: Function;
   token: string | undefined;
@@ -16,46 +17,36 @@ type UpdateLocationProps = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function UpdateLocation({ locationId, location, onUpdate, token, showModal, setShowModal }: UpdateLocationProps) {
-  const [name, setName] = useState(location.name);
-
-  useEffect(() => {
-    setName(location.name);
-  }, [location]);
+export default function UpdateLocation({ locationId, locationName, location, onUpdate, token, showModal, setShowModal }: UpdateLocationProps) {
+  const [name, setName] = useState<string>(location.locationName || '');
 
   const handleUpdateLocation = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}`, {
         method: 'PATCH',
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ locationName: name }),
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
       if (response.ok) {
-        console.log('Location updated successfully');
+        toast.success('Location updated successfully');
         onUpdate();
         setShowModal(false);
       } else {
-        throw new Error("Failed to update location");
+        const errorData = await response.json();
+        toast.error(errorData.Message || 'Failed to update location');
       }
     } catch (error) {
       console.error('Error updating location:', error);
-      console.log(locationId);
     }
   };
 
   return (
     <div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => setShowModal(true)}
-      >
-        Update Location
-      </button>
-
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
@@ -72,15 +63,6 @@ export default function UpdateLocation({ locationId, location, onUpdate, token, 
                   required
                 />
               </div>
-              {/* <div className="mb-4">
-                <label htmlFor="locationImage" className="block font-medium text-sm text-gray-700">Location Image:</label>
-                <input
-                  type="file"
-                  id="locationImage"
-                  onChange={handleFileChange}
-                  className="w-full border rounded p-2 mt-1"
-                />
-              </div> */}
               <div className="flex justify-end">
                 <button
                   type="button"

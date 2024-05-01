@@ -2,13 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import AddCamera from './AddCamera';
 import UpdateCamera from './UpdateCamera';
+import FixCamera from './FixCamera';
 
-// type Camera = {
-//     id: string;
-//     cameraName: string;
-//     cameraDestination: string;
-//     status: string;
-// };
+type Camera = {
+    id: string;
+    cameraName: string;
+    cameraDestination: string;
+    status: string;
+};
+
+type Location = {
+    locationId: string;
+    locationName: string;
+};
 
 const GetCamera = ({ token }: { token: string | undefined }) => {
     const [cameras, setCameras] = useState<any[]>([]);
@@ -18,12 +24,51 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(10);
     const [totalPages, setTotalPages] = useState<number>(0);
+    const [selectedCamera, setSelectedCamera] = useState<any | null>(null);
+    const [locations, setLocations] = useState<Location[]>([]);
 
     const [filters, setFilters] = useState({
         name: '',
         status: ''
     });
 
+    const handleRowClick = (camera: any) => {
+        const location = locations.find(loc => loc.locationName === camera.locationName);
+        const cameraWithLocationId = {
+            ...camera,
+            locationId: location ? location.locationId : '',
+        };
+        setSelectedCamera(cameraWithLocationId);
+        setShowModal(true);
+    };
+
+    const fetchLocations = async () => {
+        try {
+            const response = await fetch('https://firealarmcamerasolution.azurewebsites.net/api/v1/Location', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const apiResponse = await response.json();
+                setLocations(apiResponse.data);
+            } else {
+                throw new Error('Failed to fetch locations');
+            }
+        } catch (error) {
+            console.error('Error fetching locations:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchLocations();
+    }, [token]);
+
+    const refreshCamerasAfterFix = () => {
+        refreshCameras();
+    };
     const refreshCameras = async () => {
         setLoading(true);
         setError(null);
@@ -37,9 +82,10 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
             });
             if (response.ok) {
                 const apiResponse = await response.json();
+                apiResponse.data.sort((a: Camera, b: Camera) => a.cameraName.localeCompare(b.cameraName));
                 setCameras(apiResponse.data);
                 setFilteredCameras(apiResponse.data);
-                setTotalPages(Math.ceil(apiResponse.length / itemsPerPage));
+                setTotalPages(Math.ceil(apiResponse.data.length / itemsPerPage));
             } else {
                 throw new Error('Failed to fetch cameras');
             }
@@ -63,8 +109,8 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                 });
                 if (response.ok) {
                     const apiResponse = await response.json();
-                    console.log('Camera fetched successfully');
-                    console.log(apiResponse);
+                    //sort cameras by name
+                    apiResponse.data.sort((a: Camera, b: Camera) => a.cameraName.localeCompare(b.cameraName));
                     setCameras(apiResponse.data);
                     setFilteredCameras(apiResponse.data);
                     setTotalPages(Math.ceil(apiResponse.data.length / itemsPerPage));
@@ -181,8 +227,9 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Index</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Camera Name</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Camera Destination</th>
+                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Location</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Status</th>
-                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Update</th>
+                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Action</th>
                         </tr>
                     </thead>
                     <tbody className="text-gray-700">
@@ -196,10 +243,12 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                             </tr>
                         ) : (
                             currentItems.map((camera, index) => (
-                                <tr key={camera.id} className="border-b border-gray-200 hover:bg-gray-50">
+                                <tr key={camera.cameraId} className="border-b border-gray-200 hover:bg-gray-50" onClick={() => handleRowClick(camera)}>
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{indexOfFirstItem + index + 1}</td>
+                                    {/* <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{camera.cameraId}</td> */}
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{camera.cameraName}</td>
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{camera.cameraDestination}</td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{camera.locationName}</td>
                                     <td className="border-b-2 border-gray-200 px-4 py-2 text-left ">
                                         <span className={
                                             `font-bold whitespace-no-wrap inline-block px-2 py-1 rounded ${camera.status === 'Connected'
@@ -210,17 +259,10 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                                             {camera.status}
                                         </span>
                                     </td>
-                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left ">
-                                        <UpdateCamera
-                                            cameraId={camera.id} //chua truyen dc id
-                                            camera={camera}
-                                            onUpdate={() => {
-                                                refreshCameras();
-                                            }}
-                                            token={token}
-                                            showModal={showModal}
-                                            setShowModal={setShowModal}
-                                        />
+                                    <td>
+                                        {camera.status === 'Disconnected' ? (
+                                            <FixCamera cameraId={camera.cameraId} token={token} onCameraFixed={refreshCamerasAfterFix} />
+                                        ) : null}
                                     </td>
                                 </tr>
                             ))
@@ -239,6 +281,19 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                     )}
                 </nav>
             </div>
+            {selectedCamera && (
+                <UpdateCamera
+                    key={selectedCamera.cameraId}
+                    cameraId={selectedCamera.cameraId}
+                    camera={selectedCamera}
+                    onUpdate={() => {
+                        refreshCameras();
+                    }}
+                    token={token}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                />
+            )}
         </div>
     );
 };

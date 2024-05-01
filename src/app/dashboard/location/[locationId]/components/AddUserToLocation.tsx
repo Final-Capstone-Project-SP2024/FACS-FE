@@ -16,15 +16,12 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ staff: selectedUsers })  
+                body: JSON.stringify({ staff: selectedUsers })
             });
             if (res.ok) {
                 console.log('Users added to location successfully');
-                // Clear selected users after adding
                 setSelectedUsers([]);
-                // Close modal
                 setShowModal(false);
-                // Update user locations
                 updateUserLocations();
             } else {
                 console.error('Failed to add users to location');
@@ -67,7 +64,7 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
 
     useEffect(() => {
         fetchUsers();
-    }, []); // Ensure it runs only once on mount
+    }, []);
 
     const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedOptions = Array.from(event.target.selectedOptions, (option: HTMLOptionElement) => option.value);
@@ -88,29 +85,38 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
                 Add User
             </button>
             {showModal && (
-                <div className="fixed z-10 inset-0 overflow-y-auto">
-                    <div className="flex items-center justify-center min-h-screen">
-                        <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
+                        <h2 className="text-xl font-semibold mb-4">Add Users to Location</h2>
+                        <div className="mb-4">
+                            <label htmlFor="users" className="block font-medium text-sm text-gray-700">Select Users:</label>
+                            <select
+                                multiple
+                                id="users"
+                                value={selectedUsers}
+                                onChange={handleUserChange}
+                                className="w-full border rounded p-2 mt-1"
+                            >
+                                {users.map(user => (
+                                    <option key={user.id} value={user.id}>{user.name}</option>
+                                ))}
+                            </select>
                         </div>
-                        <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-                            <div className="flex justify-between p-4 border-b">
-                                <h2 className="text-lg font-semibold">Add User to Location</h2>
-                                <button onClick={handleModalClose} className="text-gray-500 hover:text-gray-700">
-                                    <span className="sr-only">Close</span>
-                                    &times;
-                                </button>
-                            </div>
-                            <div className="p-4">
-                                <select multiple value={selectedUsers} onChange={handleUserChange} className="w-full border rounded px-3 py-2">
-                                    {users.map(user => (
-                                        <option key={user.id} value={user.id}>{user.name}</option>
-                                    ))}
-                                </select>
-                                <button onClick={handleAddUserToLocation} disabled={selectedUsers.length === 0 || loading} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Add Users
-                                </button>
-                            </div>
+                        <div className="flex justify-end">
+                            <button
+                                type="button"
+                                className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 mr-4 rounded"
+                                onClick={handleModalClose}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleAddUserToLocation}
+                                disabled={selectedUsers.length === 0 || loading}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            >
+                                Add Users
+                            </button>
                         </div>
                     </div>
                 </div>

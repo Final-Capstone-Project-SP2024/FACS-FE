@@ -52,14 +52,14 @@ export default function UserLocation({ locationId, token }: { locationId: string
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <div className='bg-gray-100 p-4'>
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold mt-4 ml-2">Location Detail</h1>
+        <div className='flex flex-col px-4 h-full'>
+            <div className="flex justify-between items-center mb-4 px-4">
+                <h1 className="text-2xl font-bold">Users</h1>
                 <div>
                     <AddUserToLocation locationId={locationId} token={token} updateUserLocations={updateUserLocations} />
                 </div>
             </div>
-            <div className="overflow-x-auto p-3 bg-white">
+            <div className="overflow-x-auto bg-white">
                 <table className="min-w-full divide-y divide-gray-200 bg-gray-100 border-b border-gray-200">
                     <thead>
                         <tr>
@@ -67,7 +67,7 @@ export default function UserLocation({ locationId, token }: { locationId: string
                             <th className="px-6 py-3 text-center text-xs border">User Name</th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y bg-white">
                         {locations.map((location, index) => (
                             <tr key={index}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center">{index + 1}</td>

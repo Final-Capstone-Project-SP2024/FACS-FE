@@ -4,6 +4,11 @@ import React, { useState, useEffect } from 'react';
 import AddLocation from './AddLocation';
 import UpdateLocation from './UpdateLocation';
 
+type Location = {
+    locationId: string;
+    locationName: string;
+};
+
 export default function GetLocation({ token }: { token: string | undefined }) {
     const [locations, setLocations] = useState<any[]>([]);
     const [filteredLocations, setFilteredLocations] = useState<any[]>([]);
@@ -12,6 +17,8 @@ export default function GetLocation({ token }: { token: string | undefined }) {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(10);
     const [filter, setFilter] = useState<string>('');
+    const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+    const [showModal, setShowModal] = useState(false);
 
     const fetchLocations = async () => {
         setLoading(true);
@@ -37,8 +44,6 @@ export default function GetLocation({ token }: { token: string | undefined }) {
             setLoading(false);
         }
     };
-
-    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         fetchLocations();
@@ -71,6 +76,11 @@ export default function GetLocation({ token }: { token: string | undefined }) {
         fetchLocations();
     };
 
+    const handleRowClick = (location: Location) => {
+        setSelectedLocation(location);
+        setShowModal(true);
+    };
+
     return (
         <div className='bg-gray-100 p-4'>
             <div className="flex justify-between items-center mb-4">
@@ -95,31 +105,20 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Location Name</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Number of Cameras</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Number of Security</th>
-                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Update</th>
+                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Details</th>
                         </tr>
                     </thead>
                     <tbody>
                         {currentLocations.map((location, index) => (
-                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-50" onClick={() => handleRowClick(location)}>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{indexOfFirstLocation + index + 1}</td>
-                                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
-                                    <Link href={`location/${location.locationId}`} className="text-blue-500 hover:underline">
-                                        {location.locationName}
-                                    </Link>
-                                </td>
+                                <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.locationName}</td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfCamera}</td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfSecurity}</td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
-                                    <UpdateLocation 
-                                        locationId={location.id} //chua truyen dc id
-                                        location={location}
-                                        onUpdate={() => {
-                                            fetchLocations();
-                                        }}
-                                        token={token}
-                                        showModal={showModal}
-                                        setShowModal={setShowModal}
-                                    />
+                                    <Link href={`location/${location.locationId}`} className="text-blue-500 hover:underline" onClick={(e) => e.stopPropagation()}>
+                                        Details
+                                    </Link>
                                 </td>
                             </tr>
                         ))}
@@ -145,6 +144,20 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                     Next
                 </button>
             </div>
+            {selectedLocation && (
+                <UpdateLocation
+                    key={selectedLocation.locationId}
+                    locationId={selectedLocation.locationId}
+                    locationName={selectedLocation.locationName}
+                    location={selectedLocation}
+                    onUpdate={() => {
+                        fetchLocations();
+                    }}
+                    token={token}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                />
+            )}
         </div>
     );
 }

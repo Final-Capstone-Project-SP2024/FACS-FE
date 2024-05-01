@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import UpdateUser from './UpdateUser';
 import AddUser from './AddUser';
+import { toast } from 'react-toastify';
 
 type ApiResponse = {
     data: {
@@ -92,7 +93,8 @@ export default function UserTable({ token }: { token: string | undefined }) {
             setSelectedUser(user);
             setShowModal(true);
         } else {
-            console.log('Update is not allowed for Manager role.');
+            toast.error('Update is not allowed for Manager role.');
+            // console.log('Update is not allowed for Manager role.');
         }
     };
 

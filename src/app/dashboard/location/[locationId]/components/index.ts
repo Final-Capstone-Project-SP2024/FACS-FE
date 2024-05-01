@@ -1,4 +1,5 @@
 import UserLocation from "./UserLocation";
 import AddUserToLocation from "./AddUserToLocation";
 import RemoveStaffFromLocation from "./RemoveStaffFromLocation";
-export { UserLocation, AddUserToLocation, RemoveStaffFromLocation }
+import LocationDetails from "./LocationDetails";
+export { UserLocation, AddUserToLocation, RemoveStaffFromLocation, LocationDetails }
