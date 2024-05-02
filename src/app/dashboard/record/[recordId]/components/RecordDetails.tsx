@@ -153,7 +153,7 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
             <p className="mb-2 text-3xl"><span className="font-semibold"> {record.cameraName}</span></p>
             <p className="mb-2 text-lg"><span className="font-semibold">Camera Destination:</span> {record.cameraDestination}</p>
             <p className="mb-2 text-lg"><span className="font-semibold">Predicted: </span> {parseFloat(record.predictedPercent).toFixed(2)}% - {record.recommendAlarmLevel}</p>
-            <p className="mb-2 text-lg"><span className="font-semibold">Time:</span> {record.recordTime} - {record.finishTime}</p>
+            <p className="mb-2 text-lg"><span className="font-semibold">Time:</span> {record.recordTime} - {record.status === "InFinish" ? record.finishTime : "Not Finish Yet"}</p>
             <p className="mb-2 text-lg"><span className="font-semibold">Status:</span> {record.status}</p>
           </div>
         </div>
