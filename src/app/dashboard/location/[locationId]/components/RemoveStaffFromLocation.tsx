@@ -1,7 +1,10 @@
 'use client'
 import React, { useState } from 'react';
+import { IoIosRemoveCircle } from "react-icons/io";
+import { toast } from 'react-toastify';
 
-export default function RemoveStaffFromLocation({ staffId, locationId, token, updateUserLocations } : { staffId: string, locationId: string, token: string | undefined, updateUserLocations: () => void }) {
+
+export default function RemoveStaffFromLocation({ staffId, locationId, token, updateUserLocations }: { staffId: string, locationId: string, token: string | undefined, updateUserLocations: () => void }) {
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -10,7 +13,7 @@ export default function RemoveStaffFromLocation({ staffId, locationId, token, up
         const staffData = {
             staff: [staffId]
         };
-        console.log( 'here' + staffData);
+        console.log('here' + staffData);
         try {
             const res = await fetch(
                 `https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}/unregisterStaff`,
@@ -20,16 +23,15 @@ export default function RemoveStaffFromLocation({ staffId, locationId, token, up
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    // Include the staff data as a JSON string in the request body
                     body: JSON.stringify(staffData),
                 }
             );
             if (res.ok) {
-                // After removing staff, refresh the user locations list
                 updateUserLocations();
-                console.log('Staff removed successfully.');
+                toast.success('Staff removed from this location successfully');
             } else {
-                console.error('Failed to remove staff from location');
+                const errorData = await res.json();
+                toast.error(errorData.Message || 'Failed to remove staff from this location');
             }
         } catch (error) {
             console.error('Error removing staff:', error);
@@ -37,23 +39,21 @@ export default function RemoveStaffFromLocation({ staffId, locationId, token, up
             setShowModal(false);
         }
     };
-    
+
 
     return (
         <div>
-            {/* Button to show the modal */}
             <button
-                className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${isLoading ? 'opacity-50' : ''}`}
+                className={`bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 onClick={() => setShowModal(true)}
                 disabled={isLoading}
             >
-                Remove Staff
+                <IoIosRemoveCircle className={`font-bold w-5 h-5 inline-block ${isLoading ? 'text-gray-300' : 'text-white'}`} />
             </button>
 
-            {/* Modal */}
             {showModal && (
                 <div
-                    className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50"
+                    className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-title"
@@ -73,7 +73,7 @@ export default function RemoveStaffFromLocation({ staffId, locationId, token, up
                             >
                                 No
                             </button>
-                            
+
                             {/* Yes button */}
                             <button
                                 className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${isLoading ? 'opacity-50' : ''}`}

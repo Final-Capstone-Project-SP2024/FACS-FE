@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { FaCamera, FaRegUser, FaSignOutAlt } from 'react-icons/fa';
-import { MdLocationCity, MdWorkHistory, MdSettings } from 'react-icons/md';
+import { MdLocationCity, MdWorkHistory, MdSettings, MdNotifications } from 'react-icons/md';
 import Setting from './Setting';
 
 export default function Sidebar() {
@@ -61,6 +61,12 @@ export default function Sidebar() {
                     <div className={`flex items-center w-full h-16 gap-1 px-5 cursor-pointer rounded ${pathname.startsWith('/dashboard/record') ? 'bg-blue-300 text-white' : 'text-black hover:bg-blue-500 hover:text-white'}`}>
                         <MdWorkHistory className='text-xl mr-2' />
                         <h1 className='text-base font-bold'>Record</h1>
+                    </div>
+                </Link>
+                <Link href="/dashboard/notification">
+                    <div className={`flex items-center w-full h-16 gap-1 px-5 cursor-pointer rounded ${pathname.startsWith('/dashboard/notification') ? 'bg-blue-300 text-white' : 'text-black hover:bg-blue-500 hover:text-white'}`}>
+                        <MdNotifications className='text-xl mr-2' />
+                        <h1 className='text-base font-bold'>Notification</h1>
                     </div>
                 </Link>
             </div>

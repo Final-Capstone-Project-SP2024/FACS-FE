@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function AddLocation({ token, onLocationAdded }: { token: string | undefined, onLocationAdded: () => void }) {
   const [locationName, setLocationName] = useState<string>('');
@@ -24,11 +25,12 @@ export default function AddLocation({ token, onLocationAdded }: { token: string 
         },
       });
       if (response.ok) {
-        console.log('Location added successfully');
+        toast.success('Location added successfully');
         onLocationAdded();
         setShowModal(false);
       } else {
-        throw new Error("Failed to add location");
+        const errorData = await response.json();
+        toast.error(errorData.Message || 'Failed to add location!');
       }
     } catch (error) {
       console.error('Error adding location:', error);

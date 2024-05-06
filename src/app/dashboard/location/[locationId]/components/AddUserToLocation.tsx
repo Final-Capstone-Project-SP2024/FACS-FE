@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export default function AddUserToLocation({ locationId, token, updateUserLocations }: { locationId: string, token: string | undefined, updateUserLocations: () => void }) {
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -19,12 +20,14 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
                 body: JSON.stringify({ staff: selectedUsers })
             });
             if (res.ok) {
-                console.log('Users added to location successfully');
+                // console.log('Users added to location successfully');
+                toast.success('Add user to this location successfully!');
                 setSelectedUsers([]);
                 setShowModal(false);
                 updateUserLocations();
             } else {
-                console.error('Failed to add users to location');
+                const errorData = await res.json();
+                toast.error(errorData.Message || 'Failed to add user to this location');
             }
         } catch (error) {
             console.error('Error adding users:', error);
@@ -45,7 +48,8 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
             });
             if (response.ok) {
                 const apiResponse = await response.json();
-                console.log('Users fetched successfully');
+                // toast.success('Add user to this location successfully!');
+                // console.log('Users fetched successfully');
                 console.log(apiResponse.data);
                 if (Array.isArray(apiResponse.data)) {
                     setUsers(apiResponse.data);

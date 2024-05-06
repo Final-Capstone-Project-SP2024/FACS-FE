@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import AddUserToLocation from './AddUserToLocation';
+import RemoveStaffFromLocation from './RemoveStaffFromLocation';
 
 const handleGetUserLocation = async (locationId: string, token: string | undefined) => {
     const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}/getUser`, {
@@ -52,7 +53,7 @@ export default function UserLocation({ locationId, token }: { locationId: string
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <div className='flex flex-col px-4 h-full'>
+        <div className='flex flex-col h-full'>
             <div className="flex justify-between items-center mb-4 px-4">
                 <h1 className="text-2xl font-bold">Users</h1>
                 <div>
@@ -63,8 +64,9 @@ export default function UserLocation({ locationId, token }: { locationId: string
                 <table className="min-w-full divide-y divide-gray-200 bg-gray-100 border-b border-gray-200">
                     <thead>
                         <tr>
-                            <th className="px-6 py-3 text-center text-xs border">Index</th>
-                            <th className="px-6 py-3 text-center text-xs border">User Name</th>
+                            <th className="px-2 py-3 text-center text-xs border">Index</th>
+                            <th className="px-6 py-3 text-center text-xs border">Username</th>
+                            <th className="px-6 py-3 text-center text-xs border">Action</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y bg-white">
@@ -72,6 +74,7 @@ export default function UserLocation({ locationId, token }: { locationId: string
                             <tr key={index}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center">{index + 1}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center">{location.name}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border text-center"><RemoveStaffFromLocation staffId={location.userID} locationId={locationId} token={token} updateUserLocations={updateUserLocations}/></td>
                             </tr>
                         ))}
                     </tbody>
