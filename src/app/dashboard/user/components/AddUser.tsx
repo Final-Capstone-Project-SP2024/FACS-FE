@@ -8,6 +8,7 @@ export default function AddUser({ token, onUserAdded }: { token: string | undefi
     const [name, setName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [errors, setErrors] = useState<{ name?: string; password?: string; }>({});
 
     const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

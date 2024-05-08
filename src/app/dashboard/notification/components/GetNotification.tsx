@@ -86,6 +86,7 @@ export default function GetNotification({ token }: GetNotificationProps) {
                         <UpdateNotification
                             notification={selectedNotification}
                             token={token}
+                            onUpdate={fetchNotifications}
                             onClose={closeModal}
                         />
                     )}

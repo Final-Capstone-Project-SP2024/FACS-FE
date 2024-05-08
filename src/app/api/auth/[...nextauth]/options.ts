@@ -21,17 +21,21 @@ export const authOptions: NextAuthOptions = {
             }),
             cache: "no-cache",
           });
-  
-          const user = await res.json();
-          // console.log(user);
 
-          if (res.ok && user) {
+          const user = await res.json();
+          if (res.ok && user && user.data.role.roleName === "Manager") {
             return user;
           } else {
-            return null;
+            if (user?.Message) {
+              throw new Error(user.Message);
+            } else if (user.data.role.roleName === "User") {
+              throw new Error(user.Message);
+            }
+            throw new Error('Login not successful');
           }
-        } catch (err) {
-          console.log(err);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Error connecting to auth service';
+          throw new Error(errorMessage);
         }
       },
     }),

@@ -1,28 +1,52 @@
 "use client";
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import login from '../../../../../public/login-img.jpeg';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
-    const [securityCode, setSecurityCode] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+    const [securityCode, setSecurityCode] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const router = useRouter();
+    const { data: session, status } = useSession();
+
+    useEffect(() => {
+        if (status === 'authenticated') {
+            router.push('/dashboard');
+        }
+    }, [router, session, status]);
 
     const handleSignin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoggingIn(true);
+
         try {
-            const res = await signIn("credentials", {
+            const result = await signIn('credentials', {
+                redirect: false,
                 securityCode,
                 password,
-                redirect: true,
-                callbackUrl: "/dashboard",
             });
-            // console.log(res);
 
+            if (result?.error) {
+                toast.error(result.error);
+            } else {
+                const session = await fetch('/api/auth/session').then((res) => res.json());
+                console.log(session);
+                if (session?.user?.data?.role?.roleName !== 'Manager') {
+                    toast.error('Only Manager can log in.');
+                } else {
+                    toast.success('Login Successfully!');
+                    window.location.href = '/dashboard';
+                }
+            }
         } catch (error) {
-            console.log(error);
+            console.error('Error during sign-in:', error);
+            toast.error('Login failed');
+        } finally {
+            setIsLoggingIn(false);
         }
     };
 

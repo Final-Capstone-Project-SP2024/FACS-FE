@@ -12,10 +12,11 @@ type Notification = {
 type UpdateNotificationProps = {
     notification: Notification;
     token: string | undefined;
+    onUpdate: Function;
     onClose: () => void;
 };
 
-export default function UpdateNotification({ notification, token, onClose }: UpdateNotificationProps) {
+export default function UpdateNotification({ notification, token, onUpdate, onClose }: UpdateNotificationProps) {
     const [title, setTitle] = useState(notification.title);
     const [context, setContext] = useState(notification.context);
     // console.log(notification.id);
@@ -37,6 +38,7 @@ export default function UpdateNotification({ notification, token, onClose }: Upd
 
             if (res.ok) {
                 toast.success('Notification updated successfully');
+                onUpdate();
                 onClose();
             } else {
                 const errorData = await res.json();
@@ -47,7 +49,7 @@ export default function UpdateNotification({ notification, token, onClose }: Upd
         }
     };
 
-    return (
+    return (    
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
             <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                 <div className="mt-3 text-center">
