@@ -1,2 +1,3 @@
 import RecordDetails from "./RecordDetails";
-export { RecordDetails };
+import AlarmLevel from "./AlarmLevel";
+export { RecordDetails, AlarmLevel };

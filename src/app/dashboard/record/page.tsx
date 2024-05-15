@@ -8,7 +8,6 @@ export default async function Record({ params }: { params: { locationId: string 
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
 
-
   return (
     <div className="container mx-auto">
       <RecordRow token={token}/>

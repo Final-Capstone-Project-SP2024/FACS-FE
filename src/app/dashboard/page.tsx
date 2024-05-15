@@ -42,6 +42,7 @@ export default async function page({ params }: { params: { locationId: string } 
       <div className='mb-4 grid grid-cols-4 gap-4'>
         <div className='col-span-3'>
           <div className="bg-white p-4 rounded-md shadow-md">
+            <h2 className="text-base font-semibold mb-4">Records Recently</h2>
             <table className="min-w-full leading-normal">
               <thead>
                 <tr>
