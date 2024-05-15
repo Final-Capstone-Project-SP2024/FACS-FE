@@ -8,8 +8,8 @@ import { AddLocation, GetLocation } from './components';
 export default async function Location({ params }: { params: { locationId: string } }, token: string | undefined) {
   const session = await getServerSession(authOptions);
   token = session?.user.data.accessToken;
-  const listLocations: ILocations = await getLocation(token);
-  const location = listLocations?.data;
+  // const listLocations: ILocations = await getLocation(token);
+  // const location = listLocations?.data;
   // console.log(location);
 
   return (

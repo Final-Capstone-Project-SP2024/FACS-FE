@@ -6,16 +6,33 @@ export default function AddLocation({ token, onLocationAdded }: { token: string 
   const [locationName, setLocationName] = useState<string>('');
   const [locationImage, setLocationImage] = useState<File | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [locationNameError, setLocationNameError] = useState<string | null>(null);
 
   const handleAddLocation = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
+    setFileError(null);
+    setLocationNameError(null);
+
+    if (!locationImage) {
+      setFileError('An image file is required.');
+      return;
+    }
+    if (!locationName) {
+      setFileError('Location Name is required.');
+      return;
+    }
+
+    if (!locationName.startsWith("Location")) {
+      setLocationNameError("Location name must start with the keyword 'Location'.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append('locationName', locationName);
-    if (locationImage) {
-      formData.append('locationImage', locationImage, locationImage.name);
-    }
-  
+    formData.append('locationImage', locationImage, locationImage.name);
+
     try {
       const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location`, {
         method: 'POST',
@@ -30,6 +47,7 @@ export default function AddLocation({ token, onLocationAdded }: { token: string 
         setShowModal(false);
       } else {
         const errorData = await response.json();
+        console.error(errorData);
         toast.error(errorData.Message || 'Failed to add location!');
       }
     } catch (error) {
@@ -39,16 +57,32 @@ export default function AddLocation({ token, onLocationAdded }: { token: string 
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocationName(e.target.value);
-  }
+  };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const validateAndSetLocationImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5242880) {
+        setFileError('File size should be less than 5MB.');
+        setLocationImage(null);
+        return;
+      }
+      
+      const validExtensions = ['png', 'jpg', 'jpeg', 'webp'];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      if (!validExtensions.includes(fileExtension || '')) {
+        setFileError('File type must be .png, .jpg, .jpeg, or .webp.');
+        setLocationImage(null);
+        return;
+      }
+
       setLocationImage(file);
+      setFileError(null);
     } else {
+      setFileError('An image file is required.');
       setLocationImage(null);
     }
-  }
+  };
 
   return (
     <div>
@@ -74,16 +108,18 @@ export default function AddLocation({ token, onLocationAdded }: { token: string 
                   className="w-full border rounded p-2 mt-1"
                   required
                 />
+                {locationNameError && <p className="text-red-500 text-xs italic">{locationNameError}</p>}
               </div>
               <div className="mb-4">
                 <label htmlFor="locationImage" className="block font-medium text-sm text-gray-700">Location Image:</label>
                 <input
                   type="file"
                   id="locationImage"
-                  onChange={handleFileChange}
+                  onChange={validateAndSetLocationImage}
                   className="w-full border rounded p-2 mt-1"
                   required
                 />
+                {fileError && <p className="text-red-500 text-xs italic">{fileError}</p>}
               </div>
               <div className="flex justify-end">
                 <button

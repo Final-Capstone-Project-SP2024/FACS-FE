@@ -31,6 +31,7 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
     const [email, setEmail] = useState(user.email);
     const [phone, setPhone] = useState(user.phone);
     const [name, setName] = useState(user.name);
+    const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
 
     useEffect(() => {
         setEmail(user.email);
@@ -38,8 +39,31 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
         setName(user.name);
     }, [user]);
 
+    const handleValidation = () => {
+        let tempErrors = {};
+        let isValid = true;
+
+        if (!phone.match(/^\d{10,11}$/)) {
+            tempErrors = { ...tempErrors, phone: 'Phone must be 10 or 11 digits.' };
+            isValid = false;
+        }
+
+        if (!name.trim() || name.length >= 100) {
+            tempErrors = { ...tempErrors, name: 'Name must be less than 100 characters and not just whitespace.' };
+            isValid = false;
+        }
+
+        setErrors(tempErrors);
+        return isValid;
+    }
+
     const handleUpdateUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!handleValidation()) {
+            return;
+        }
+
         try {
             const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${userId}`, {
                 method: 'PATCH',
@@ -90,6 +114,7 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
                                     className="w-full border rounded p-2 mt-1"
                                     required
                                 />
+                                {errors.phone && <p className="text-red-500 text-xs italic">{errors.phone}</p>}
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="name" className="block font-medium text-sm text-gray-700">Name:</label>
@@ -101,6 +126,7 @@ export default function UpdateUser({ userId, user, onUpdate, token, showModal, s
                                     className="w-full border rounded p-2 mt-1"
                                     required
                                 />
+                                {errors.name && <p className="text-red-500 text-xs italic">{errors.name}</p>}
                             </div>
                             <div className="flex justify-end">
                                 <button

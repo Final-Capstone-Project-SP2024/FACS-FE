@@ -8,10 +8,36 @@ export default function AddUser({ token, onUserAdded }: { token: string | undefi
     const [name, setName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [errors, setErrors] = useState<{ name?: string; password?: string; }>({});
+    const [errors, setErrors] = useState<{ name?: string; password?: string; phone?: string }>({});
+
+    const handleValidation = () => {
+        let tempErrors = {};
+        let isValid = true;
+
+        if (!name.trim() || name.length >= 100) {
+            tempErrors = { ...tempErrors, name: 'Name must be less than 100 characters and not just whitespace.' };
+            isValid = false;
+        }
+
+        if (!phone.match(/^\d{10,11}$/)) {
+            tempErrors = { ...tempErrors, phone: 'Phone must be 10 or 11 digits.' };
+            isValid = false;
+        }
+
+        if (password.length <= 8) {
+            tempErrors = { ...tempErrors, password: 'Password must be more than 8 characters.' };
+            isValid = false;
+        }
+
+        setErrors(tempErrors);
+        return isValid;
+    }
 
     const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!handleValidation()) {
+            return;
+        }
 
         try {
             const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User`, {
@@ -71,6 +97,7 @@ export default function AddUser({ token, onUserAdded }: { token: string | undefi
                                     className="w-full border rounded p-2 mt-1"
                                     required
                                 />
+                                {errors.phone && <p className="text-red-500 text-xs italic">{errors.phone}</p>}
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="name" className="block font-medium text-sm text-gray-700">Name:</label>
@@ -82,6 +109,7 @@ export default function AddUser({ token, onUserAdded }: { token: string | undefi
                                     className="w-full border rounded p-2 mt-1"
                                     required
                                 />
+                                {errors.name && <p className="text-red-500 text-xs italic">{errors.name}</p>}
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="password" className="block font-medium text-sm text-gray-700">Password:</label>
@@ -93,6 +121,7 @@ export default function AddUser({ token, onUserAdded }: { token: string | undefi
                                     className="w-full border rounded p-2 mt-1"
                                     required
                                 />
+                                {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
                             </div>
                             <div className="flex justify-end">
                                 <button

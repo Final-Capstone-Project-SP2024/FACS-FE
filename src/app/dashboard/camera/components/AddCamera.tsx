@@ -16,6 +16,7 @@ export default function AddCamera({ token, onCameraAdded }: { token: string | un
   const [cameraName, setCameraName] = useState<string>('cameraName');
   const [listLocations, setListLocations] = useState<Location[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const handleGetListLocations = async () => {
     try {
@@ -79,11 +80,27 @@ export default function AddCamera({ token, onCameraAdded }: { token: string | un
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5242880) {
+        setFileError('File size should be less than 5MB.');
+        setCameraImage(null);
+        return;
+      }
+
+      const validExtensions = ['png', 'jpg', 'jpeg', 'webp'];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      if (!validExtensions.includes(fileExtension || '')) {
+        setFileError('File type must be .png, .jpg, .jpeg, or .webp.');
+        setCameraImage(null);
+        return;
+      }
+
       setCameraImage(file);
+      setFileError(null);
     } else {
+      setFileError('An image file is required.');
       setCameraImage(null);
     }
-  }
+  };
 
   useEffect(() => {
     handleGetListLocations();
@@ -155,6 +172,7 @@ export default function AddCamera({ token, onCameraAdded }: { token: string | un
                   className="w-full border rounded p-2 mt-1"
                   required
                 />
+                {fileError && <p className="text-red-500 text-xs italic">{fileError}</p>}
               </div>
               <div className="flex justify-end">
                 <button

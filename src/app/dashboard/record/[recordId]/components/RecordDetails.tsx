@@ -46,7 +46,7 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
 
   useEffect(() => {
     const fetchData = async () => {
-      setError(''); // Reset errors before fetching new data
+      setError('');
       if (recordId && token) {
         try {
           const data = await handleGetRecordDetails(recordId, token);
@@ -60,7 +60,7 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
             const imageRef = ref(storage, `ImageRecord/${imageName}`);
             const imageUrl = await getDownloadURL(imageRef);
             setImageUrl(imageUrl);
-            setMainMediaUrl(imageUrl); // Set the image URL as default main media
+            setMainMediaUrl(imageUrl);
           }
 
           if (videoName) {
