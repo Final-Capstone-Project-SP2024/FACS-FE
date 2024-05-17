@@ -1,31 +1,94 @@
 'use client'
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { MdSettings } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
+type AlarmConfiguration = {
+  alarmNameConfiguration: string;
+  end: number;
+}
 export default function Setting() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [buttonText, setButtonText] = useState('Change');
-  const [minValue, setMinValue] = useState('');
-  const [maxValue, setMaxValue] = useState('');
+  const [alarmConfigurations, setAlarmConfigurations] = useState<AlarmConfiguration[]>([]);
+  const [hoverIndex, setHoverIndex] = useState(-1);
+
+  const fetchAlarmConfiguration = async () => {
+    try {
+      const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/AlarmConfiguration`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // console.log(data.data);
+        setAlarmConfigurations(data.data);
+      }
+      if (!res.ok) {
+        throw new Error('Failed to fetch alarm configuration');
+      }
+    } catch (error) {
+      console.error('Error fetching alarm configuration:', error);
+    }
+  }
+
+  const updateAlarmConfiguration = async (newEndValue : number) => {
+    try {
+      const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/AlarmConfiguration?id=1`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          start: 0,
+          end: newEndValue,
+        }),
+      });
+      if (res.ok) {
+        toast.success('Alarm configuration updated successfully');
+      }
+      if (!res.ok) {
+        throw new Error('Failed to update alarm configuration');
+      }
+      await fetchAlarmConfiguration();
+    } catch (error) {
+      console.error('Error updating alarm configuration:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAlarmConfiguration();
+  }, []);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleChangeButtonClick = () => {
-    if (buttonText === 'Change') {
-      setButtonText('Update');
-    } else {
-      console.log('Min:', minValue, 'Max:', maxValue);
-      // After handling the update, you might want to close the modal or reset the button text
-      // setIsModalOpen(false);
-      setButtonText('Change');
-    }
+  const handleSegmentClick = (index : number) => {
+    console.log(`Segment ${index} clicked`);
+    updateAlarmConfiguration((index + 1) * 10);
   };
 
+  const handleSegmentHover = (index : number) => {
+    setHoverIndex(index);
+  };
+
+  const handleSegmentLeave = () => {
+    setHoverIndex(-1);
+  };
+
+  const hexagonStyle = {
+    clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'
+  };
+  const fakeAlarmConfig = alarmConfigurations.find(config => config.alarmNameConfiguration === 'Fake Alarm');
+  const fakeAlarmPercentage = fakeAlarmConfig ? fakeAlarmConfig.end : 0;
+  const coloredSegments = Math.ceil(fakeAlarmPercentage / 10);
+  console.log(fakeAlarmPercentage, coloredSegments)
+
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <button
         onClick={toggleModal}
         className="flex items-center gap-1 px-5 cursor-pointer text-gray-500 hover:text-gray-700 font-bold rounded"
@@ -35,26 +98,27 @@ export default function Setting() {
       </button>
       {isModalOpen && (
         <div className='fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50'>
-          <div className='bg-white p-5 rounded-lg shadow-lg w-96'>
-            <h2 className='text-lg font-semibold mb-4'>Alarm Configuration Setting</h2>
-            <div className='flex justify-between items-center mb-4 space-x-4'> {/* Add space between Min and Max */}
-              <div>
-                <label className='block text-gray-700 text-sm font-bold mb-2'>
-                  Min
-                  <input type="number" value={minValue} onChange={(e) => setMinValue(e.target.value)} disabled={buttonText !== 'Update'} className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${buttonText !== 'Update' ? 'bg-gray-200' : ''}`} />
-                </label>
-              </div>
-              <div>
-                <label className='block text-gray-700 text-sm font-bold mb-2'>
-                  Max
-                  <input type="number" value={maxValue} onChange={(e) => setMaxValue(e.target.value)} disabled={buttonText !== 'Update'} className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${buttonText !== 'Update' ? 'bg-gray-200' : ''}`} />
-                </label>
-              </div>
+          <div className='bg-white p-5 rounded-lg shadow-lg w-auto'>
+            <h2 className='text-xl font-semibold mb-4'>Alarm Configuration Setting</h2>
+            <h2 className='text-lg font-semibold mb-2'>Alarm Notify Level</h2>
+            <p className="text-sm text-gray-600 mb-2">
+              Click a segment to set the alarm threshold (10% increments).
+            </p>
+            <div className="mb-2 flex">
+              {new Array(10).fill(null).map((_, index) => (
+                <div
+                  key={index}
+                  onMouseEnter={() => handleSegmentHover(index)}
+                  onMouseLeave={handleSegmentLeave}
+                  className={`mb-2 h-6 w-14 flex justify-center items-center cursor-pointer ${index < 9 ? (index < coloredSegments || index <= hoverIndex ? 'bg-orange-' + (index + 1) * 100 : 'bg-gray-300') :
+                    (coloredSegments === 10 || hoverIndex === 9 ? 'bg-red-900' : 'bg-gray-300')
+                    } transition-colors duration-150 ease-in-out`}
+                  onClick={() => handleSegmentClick(index)}
+                  style={hexagonStyle}
+                ></div>
+              ))}
             </div>
-            <div className='flex items-center justify-between mt-4'> {/* Add space between fields and buttons */}
-              <button onClick={handleChangeButtonClick} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
-                {buttonText}
-              </button>
+            <div className='mt-4 flex justify-end'>
               <button onClick={toggleModal} className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
                 Cancel
               </button>
