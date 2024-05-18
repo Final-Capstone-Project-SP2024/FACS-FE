@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link';
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdSettings } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
@@ -34,7 +34,7 @@ export default function Setting() {
     }
   }
 
-  const updateAlarmConfiguration = async (newEndValue : number) => {
+  const updateAlarmConfiguration = async (newEndValue: number) => {
     try {
       const res = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/AlarmConfiguration?id=1`, {
         method: 'PATCH',
@@ -66,12 +66,12 @@ export default function Setting() {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleSegmentClick = (index : number) => {
+  const handleSegmentClick = (index: number) => {
     console.log(`Segment ${index} clicked`);
     updateAlarmConfiguration((index + 1) * 10);
   };
 
-  const handleSegmentHover = (index : number) => {
+  const handleSegmentHover = (index: number) => {
     setHoverIndex(index);
   };
 
@@ -85,7 +85,22 @@ export default function Setting() {
   const fakeAlarmConfig = alarmConfigurations.find(config => config.alarmNameConfiguration === 'Fake Alarm');
   const fakeAlarmPercentage = fakeAlarmConfig ? fakeAlarmConfig.end : 0;
   const coloredSegments = Math.ceil(fakeAlarmPercentage / 10);
-  // console.log(fakeAlarmPercentage, coloredSegments)
+
+  console.log(coloredSegments, fakeAlarmPercentage, fakeAlarmConfig);
+
+  const segmentClasses = [
+    'bg-gray-300',
+    'bg-orange-50',
+    'bg-orange-100',
+    'bg-orange-200',
+    'bg-orange-300',
+    'bg-orange-400',
+    'bg-orange-500',
+    'bg-orange-600',
+    'bg-orange-700',
+    'bg-orange-800',
+    'bg-red-900',
+  ];
 
   return (
     <div className="flex flex-col">
@@ -105,18 +120,21 @@ export default function Setting() {
               Click a segment to set the alarm threshold (10% increments).
             </p>
             <div className="mb-2 flex">
-              {new Array(10).fill(null).map((_, index) => (
-                <div
-                  key={index}
-                  onMouseEnter={() => handleSegmentHover(index)}
-                  onMouseLeave={handleSegmentLeave}
-                  className={`mb-2 h-6 w-14 flex justify-center items-center cursor-pointer ${index < 9 ? (index < coloredSegments || index <= hoverIndex ? 'bg-orange-' + (index + 1) * 100 : 'bg-gray-300') :
-                    (coloredSegments === 10 || hoverIndex === 9 ? 'bg-red-900' : 'bg-gray-300')
-                    } transition-colors duration-150 ease-in-out`}
-                  onClick={() => handleSegmentClick(index)}
-                  style={hexagonStyle}
-                ></div>
-              ))}
+              {new Array(10).fill(null).map((_, index) => {
+                const isColored = index < coloredSegments || index <= hoverIndex;
+                const segmentClass = isColored ? segmentClasses[index + 1] : segmentClasses[0];
+
+                return (
+                  <div
+                    key={index}
+                    onMouseEnter={() => handleSegmentHover(index)}
+                    onMouseLeave={handleSegmentLeave}
+                    className={`mb-2 h-6 w-14 flex justify-center items-center cursor-pointer ${segmentClass} transition-colors duration-150 ease-in-out`}
+                    onClick={() => handleSegmentClick(index)}
+                    style={hexagonStyle}
+                  ></div>
+                );
+              })}
             </div>
             <div className='mt-4 flex justify-end'>
               <button onClick={toggleModal} className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
