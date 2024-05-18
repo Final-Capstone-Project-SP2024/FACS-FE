@@ -39,7 +39,7 @@ export default function AddUserToLocation({ locationId, token, updateUserLocatio
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/unregistered`, {
+            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/User/${locationId}/unregistered`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
