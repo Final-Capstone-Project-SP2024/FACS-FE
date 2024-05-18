@@ -85,7 +85,7 @@ export default function Setting() {
   const fakeAlarmConfig = alarmConfigurations.find(config => config.alarmNameConfiguration === 'Fake Alarm');
   const fakeAlarmPercentage = fakeAlarmConfig ? fakeAlarmConfig.end : 0;
   const coloredSegments = Math.ceil(fakeAlarmPercentage / 10);
-  console.log(fakeAlarmPercentage, coloredSegments)
+  // console.log(fakeAlarmPercentage, coloredSegments)
 
   return (
     <div className="flex flex-col">
