@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   Chart as ChartJS,
   Tooltip,
@@ -10,7 +11,7 @@ import {
   ChartOptions,
 } from 'chart.js';
 
-ChartJS.register(Tooltip, Legend, ArcElement, Title);
+ChartJS.register(Tooltip, Legend, ArcElement, Title, ChartDataLabels);
 
 type Camera = {
   cameraId: string;
@@ -34,7 +35,7 @@ export default function PieChart({ token }: { token: string | undefined }) {
 
   const handleFromDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFromDate = e.target.value;
-    setError(null); 
+    setError(null);
     if (newFromDate && toDate && newFromDate > toDate) {
       setError('From date cannot be later than To date.');
     } else {
@@ -44,7 +45,7 @@ export default function PieChart({ token }: { token: string | undefined }) {
 
   const handleToDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newToDate = e.target.value;
-    setError(null); 
+    setError(null);
     if (fromDate && newToDate && fromDate > newToDate) {
       setError('To date cannot be earlier than From date.');
     } else {
@@ -130,6 +131,20 @@ export default function PieChart({ token }: { token: string | undefined }) {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
+      datalabels: {
+        color: '#fff', 
+        font: {
+          weight: 'bold',
+          size: 14,
+        },
+        formatter: (value, context) => {
+          const total = context.chart.data.datasets[0].data.reduce((sum: number, val) => {
+            return typeof val === 'number' ? sum + val : sum;
+          }, 0);
+          const percentage = ((value / total) * 100).toFixed(2) + '%';
+          return percentage;
+        },
+      },
       legend: {
         position: 'bottom',
         labels: {

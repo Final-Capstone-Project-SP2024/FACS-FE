@@ -228,6 +228,15 @@ export default function Chart({ token }: { token: string | undefined }) {
     updateChartData(timePeriod);
   }, [token, timePeriod]);
 
+  const options = {
+    plugins: {
+      datalabels: {
+        display: false,
+      },
+    },
+    maintainAspectRatio: true,
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md flex flex-col">
       <div className="mb-6 flex flex-wrap items-center gap-2">
@@ -273,7 +282,7 @@ export default function Chart({ token }: { token: string | undefined }) {
       {
         chartData ? (
           <div className="flex-grow">
-            <Line data={chartData} options={{ maintainAspectRatio: true }} />
+            <Line data={chartData} options={options} />
           </div>
         ) : (
           <p className="text-center text-gray-500">Loading chart data...</p>
