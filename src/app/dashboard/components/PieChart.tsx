@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import {
@@ -11,25 +10,14 @@ import {
   ChartOptions,
 } from 'chart.js';
 
-ChartJS.register(
-  Tooltip,
-  Legend,
-  ArcElement,
-  Title,
-);
+ChartJS.register(Tooltip, Legend, ArcElement, Title);
 
-type CameraData = {
-  CameraName: string;
-  Count: number;
+type Camera = {
+  cameraId: string;
+  cameraName: string;
 };
 
-type FetchedData = {
-  Analysis: {
-    [location: string]: CameraData[];
-  };
-};
-
-export default function PieChart() {
+export default function PieChart({ token }: { token: string | undefined }) {
   const [chartData, setChartData] = useState<{
     labels: string[];
     datasets: {
@@ -40,55 +28,110 @@ export default function PieChart() {
       borderWidth: number;
     }[];
   }>({ labels: [], datasets: [] });
+  const [fromDate, setFromDate] = useState<string>('');
+  const [toDate, setToDate] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFromDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFromDate = e.target.value;
+    setError(null); 
+    if (newFromDate && toDate && newFromDate > toDate) {
+      setError('From date cannot be later than To date.');
+    } else {
+      setFromDate(newFromDate);
+    }
+  };
+
+  const handleToDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newToDate = e.target.value;
+    setError(null); 
+    if (fromDate && newToDate && fromDate > newToDate) {
+      setError('To date cannot be earlier than From date.');
+    } else {
+      setToDate(newToDate);
+    }
+  };
+
+  const refreshCameras = async () => {
+    try {
+      const response = await fetch('https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const apiResponse = await response.json();
+        const cameras: Camera[] = apiResponse.data;
+        console.log(cameras);
+        cameras.sort((a, b) => a.cameraName.localeCompare(b.cameraName));
+        return cameras;
+      } else {
+        throw new Error('Failed to fetch cameras');
+      }
+    } catch (error) {
+      console.error('Error fetching cameras:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
-    fetch('https://firealarmcamerasolution.azurewebsites.net/api/v1/FireDetection/locationAnalysis')
-      .then(response => response.json())
-      .then((data: FetchedData) => {
-        const labels: string[] = [];
-        const counts: number[] = [];
-        const backgroundColors = [
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-        ];
-        const borderColors = [
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(255,99,132,1)',
-        ];
-
-        Object.entries(data.Analysis).forEach(([location, cameras]) => {
-          cameras.forEach((camera: CameraData) => {
-            labels.push(`${location} (${camera.CameraName})`);
-            counts.push(camera.Count);
-          });
+    const fetchChartData = async () => {
+      try {
+        const cameras = await refreshCameras();
+        const queryParams = new URLSearchParams({
+          ...(fromDate && { FromDate: fromDate }),
+          ...(toDate && { ToDate: toDate }),
         });
 
-        setChartData({
-          labels,
-          datasets: [
-            {
-              label: 'Count',
-              data: counts,
-              backgroundColor: backgroundColors.slice(0, labels.length),
-              borderColor: borderColors.slice(0, labels.length),
-              borderWidth: 1,
+        const recordPromises = cameras.map(camera =>
+          fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?cameraId=${camera.cameraId}&${queryParams.toString()}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
             },
-          ],
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+          })
+            .then(response => response.json())
+            .then(records => records.totalNumberOfRecords)
+        );
+
+
+        const recordCounts = await Promise.all(recordPromises);
+        console.log(recordCounts);
+
+        const data = {
+          labels: cameras.map(camera => camera.cameraName),
+          datasets: [{
+            label: 'Record Count',
+            data: recordCounts,
+            backgroundColor: [
+              '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+            ],
+            borderColor: [
+              '#C70039', '#1F618D', '#F4D03F', '#16A085', '#8E44AD', '#E67E22'
+            ],
+            borderWidth: 1
+          }]
+        };
+
+        setChartData(data);
+      } catch (error) {
+        console.error('Failed to fetch chart data:', error);
+      }
+    };
+
+    fetchChartData();
+  }, [token, fromDate, toDate]);
 
   const options: ChartOptions<'pie'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'bottom' as const,
+        position: 'bottom',
         labels: {
           boxWidth: 20,
           padding: 15,
@@ -96,7 +139,7 @@ export default function PieChart() {
       },
       title: {
         display: true,
-        text: 'Incident count by Location and Camera',
+        text: 'Record Count by Camera',
         font: {
           size: 14,
         },
@@ -106,7 +149,28 @@ export default function PieChart() {
 
   return (
     <div className="w-full p-4 bg-white rounded-md shadow-md">
-      <div className="w-64 h-64 md:w-96 md:h-96 lg:w-64 lg:h-64 xl:w-96 xl:h-96 mx-auto">
+      <div className="flex justify-center mb-4 gap-x-2">
+        <div className="flex flex-col items-center">
+          <input
+            type="date"
+            id="fromDate"
+            value={fromDate}
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            onChange={handleFromDateChange}
+          />
+        </div>
+        <div className="flex flex-col items-center">
+          <input
+            type="date"
+            id="toDate"
+            value={toDate}
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            onChange={handleToDateChange}
+          />
+        </div>
+      </div>
+      {error && <p className="text-red-600 text-center">{error}</p>}
+      <div className="w-full h-full md:w-96 md:h-96 lg:w-96 lg:h-96 xl:w-96 xl:h-96 mx-auto">
         {chartData.labels.length > 0 ? (
           <Pie data={chartData} options={options} />
         ) : (

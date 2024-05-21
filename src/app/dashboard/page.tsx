@@ -128,7 +128,7 @@ export default async function page({ params }: { params: { locationId: string } 
       </div>
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
         <div className='p-4 bg-white shadow rounded-md' style={{ height: '100%' }}>
-          <PieChart />
+          <PieChart token={token} />
         </div>
         <div className='flex flex-col gap-4 h-{50%}'>
           <div className='p-4 bg-white shadow rounded-md flex-1'>

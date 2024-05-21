@@ -38,7 +38,7 @@ const handleGetRecords = async (
   const toDate = filters.toDate || '2030-01-01';
 
   let url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=1&PageSize=100000&FromDate=${encodeURIComponent(fromDate)}&ToDate=${encodeURIComponent(toDate)}`;
-  console.log(url);
+  // console.log(url);
   if (filters.status) {
     url += `&Status=${encodeURIComponent(filters.status)}`;
   }
@@ -54,7 +54,7 @@ const handleGetRecords = async (
 
     if (res.ok) {
       const apiResponse = await res.json();
-      console.log(apiResponse.results);
+      // console.log(apiResponse.results);
       return apiResponse.results;
     } else {
       throw new Error('Failed to fetch records');
@@ -70,8 +70,29 @@ export default function Chart({ token }: { token: string | undefined }) {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('day');
+  const [error, setError] = useState<string | null>(null);
 
-  const calculateDateRange = (timePeriod : TimePeriod) => {
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newStartDate = e.target.value;
+    setError(null);
+    if (newStartDate && endDate && newStartDate > endDate) {
+      setError('Start date cannot be later than end date.');
+    } else {
+      setStartDate(newStartDate);
+    }
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEndDate = e.target.value;
+    setError(null);
+    if (startDate && newEndDate && startDate > newEndDate) {
+      setError('End date cannot be earlier than start date.');
+    } else {
+      setEndDate(newEndDate);
+    }
+  };
+
+  const calculateDateRange = (timePeriod: TimePeriod) => {
     const now = new Date();
     let startDate;
     let endDate = now.toISOString().split('T')[0]; // End date is today
@@ -98,7 +119,7 @@ export default function Chart({ token }: { token: string | undefined }) {
     return { startDate, endDate };
   };
 
-  const updateChartData = async (timePeriod : TimePeriod) => {
+  const updateChartData = async (timePeriod: TimePeriod) => {
     try {
       // const { startDate, endDate } = calculateDateRange(timePeriod);
 
@@ -114,14 +135,13 @@ export default function Chart({ token }: { token: string | undefined }) {
         return dateA.getTime() - dateB.getTime();
       });
 
-      // Group records by month if needed
       let chartLabels = [];
       let chartDataPoints = [];
       if (timePeriod === 'month') {
         const countsByMonth = sortedRecords.reduce((acc: { [key: string]: number }, record: any) => {
           const month = new Date(record.recordTime).getMonth();
           const year = new Date(record.recordTime).getFullYear();
-          console.log(month, year);
+          // console.log(month, year);
           const monthYearKey = `${year}-${String(month + 1).padStart(2, '0')}`;
           if (!acc[monthYearKey]) {
             acc[monthYearKey] = 0;
@@ -143,7 +163,6 @@ export default function Chart({ token }: { token: string | undefined }) {
           return acc;
         }, {});
 
-        // Get the dates for the last 7 days
         for (let i = 6; i >= 0; i--) {
           const day = new Date();
           day.setDate(day.getDate() - i);
@@ -152,7 +171,6 @@ export default function Chart({ token }: { token: string | undefined }) {
           chartDataPoints.push(countsByDay[dayKey] || 0);
         }
       } else if (timePeriod === 'year') {
-        // Group records by month for the year
         const countsByMonth = sortedRecords.reduce((acc: { [key: string]: number }, record: any) => {
           const date = new Date(record.recordTime);
           const monthYearKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -163,7 +181,6 @@ export default function Chart({ token }: { token: string | undefined }) {
           return acc;
         }, {});
 
-        // Get the months for the year
         for (let i = 0; i < 12; i++) {
           const monthKey = `${new Date().getFullYear()}-${String(i + 1).padStart(2, '0')}`;
           chartLabels.push(monthKey);
@@ -228,14 +245,14 @@ export default function Chart({ token }: { token: string | undefined }) {
           <input
             type="date"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={handleStartDateChange}
             className="flex-grow px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
             placeholder="Start Date"
           />
           <input
             type="date"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={handleEndDateChange}
             className="flex-grow px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
             placeholder="End Date"
           />
@@ -249,6 +266,9 @@ export default function Chart({ token }: { token: string | undefined }) {
             Clear
           </button>
         </div>
+        {error && (
+          <div className="text-red-500 text-sm mb-2">{error}</div>
+        )}
       </div>
       {
         chartData ? (
