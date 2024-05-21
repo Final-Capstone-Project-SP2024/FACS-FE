@@ -28,144 +28,199 @@ type DataItem = {
   Count: number;
 };
 
-const fetchData = async (url: string, token: string | undefined) => {
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (res.ok) {
-    return await res.json();
-  } else {
-    throw new Error('Failed to fetch data');
-  }
-};
+type TimePeriod = 'day' | 'lastweek' | 'month' | 'year';
 
-const getLast7DaysData = (data: any) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const last7DaysDate = new Date(today);
-  last7DaysDate.setDate(today.getDate() - 7);
+const handleGetRecords = async (
+  token: string | undefined,
+  filters: { status?: string; fromDate?: string; toDate?: string }
+) => {
+  const fromDate = filters.fromDate || '2020-01-01';
+  const toDate = filters.toDate || '2030-01-01';
 
-  const last7DaysData: DataItem[] = [];
-  const dates = [];
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(last7DaysDate);
-    date.setDate(last7DaysDate.getDate() + i);
-    dates.push(date.toISOString().split('T')[0]);
+  let url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=1&PageSize=100000&FromDate=${encodeURIComponent(fromDate)}&ToDate=${encodeURIComponent(toDate)}`;
+  console.log(url);
+  if (filters.status) {
+    url += `&Status=${encodeURIComponent(filters.status)}`;
   }
 
-  dates.forEach(date => {
-    const item = data.find((d: any) => {
-      const itemDate = new Date(d.Date);
-      itemDate.setHours(0, 0, 0, 0);
-      return itemDate.toISOString().split('T')[0] === date;
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    if (item) {
-      last7DaysData.push({ Date: date, Count: item.Count });
+    if (res.ok) {
+      const apiResponse = await res.json();
+      console.log(apiResponse.results);
+      return apiResponse.results;
     } else {
-      last7DaysData.push({ Date: date, Count: 0 });
+      throw new Error('Failed to fetch records');
     }
-  });
-
-  return last7DaysData;
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    throw error;
+  }
 };
 
 export default function Chart({ token }: { token: string | undefined }) {
   const [chartData, setChartData] = useState<any>(null);
-  const [fetchedDayData, setFetchedDayData] = useState<any>(null);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>('day');
 
-  const updateChartData = async (interval: string, startDate?: string, endDate?: string) => {
+  const calculateDateRange = (timePeriod : TimePeriod) => {
+    const now = new Date();
+    let startDate;
+    let endDate = now.toISOString().split('T')[0]; // End date is today
+
+    switch (timePeriod) {
+      case 'day':
+        // startDate = endDate; // Start date is also today
+        break;
+      case 'lastweek':
+        let lastWeek = new Date();
+        lastWeek.setDate(now.getDate() - 7);
+        startDate = lastWeek.toISOString().split('T')[0];
+        break;
+      case 'month':
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+        break;
+      case 'year':
+        startDate = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0];
+        break;
+      default:
+        startDate = endDate; // Default to today
+    }
+
+    return { startDate, endDate };
+  };
+
+  const updateChartData = async (timePeriod : TimePeriod) => {
     try {
-      let data: any;
+      // const { startDate, endDate } = calculateDateRange(timePeriod);
 
-      if (interval === 'day') {
-        data = await fetchData(`https://firealarmcamerasolution.azurewebsites.net/api/v1/FireDetection/${interval}`, token);
-        if (startDate && endDate) {
-          const start = new Date(startDate);
-          const end = new Date(endDate);
-          data = data.filter((item: any) => {
-            const itemDate = new Date(item.Date);
-            return itemDate >= start && itemDate <= end;
-          });
+      const records = await handleGetRecords(token, {
+        fromDate: startDate,
+        toDate: endDate,
+      });
+
+      // Sort the records by date
+      const sortedRecords = records.sort((a: any, b: any) => {
+        const dateA = new Date(a.recordTime);
+        const dateB = new Date(b.recordTime);
+        return dateA.getTime() - dateB.getTime();
+      });
+
+      // Group records by month if needed
+      let chartLabels = [];
+      let chartDataPoints = [];
+      if (timePeriod === 'month') {
+        const countsByMonth = sortedRecords.reduce((acc: { [key: string]: number }, record: any) => {
+          const month = new Date(record.recordTime).getMonth();
+          const year = new Date(record.recordTime).getFullYear();
+          console.log(month, year);
+          const monthYearKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+          if (!acc[monthYearKey]) {
+            acc[monthYearKey] = 0;
+          }
+          acc[monthYearKey] += 1;
+          return acc;
+        }, {});
+
+        chartLabels = Object.keys(countsByMonth).sort();
+        chartDataPoints = chartLabels.map(monthYearKey => countsByMonth[monthYearKey]);
+      } else if (timePeriod === 'lastweek') {
+        // Group records by each of the last 7 days
+        const countsByDay = sortedRecords.reduce((acc: { [key: string]: number }, record: any) => {
+          const date = new Date(record.recordTime).toISOString().split('T')[0];
+          if (!acc[date]) {
+            acc[date] = 0;
+          }
+          acc[date] += 1;
+          return acc;
+        }, {});
+
+        // Get the dates for the last 7 days
+        for (let i = 6; i >= 0; i--) {
+          const day = new Date();
+          day.setDate(day.getDate() - i);
+          const dayKey = day.toISOString().split('T')[0];
+          chartLabels.push(dayKey);
+          chartDataPoints.push(countsByDay[dayKey] || 0);
         }
-        setFetchedDayData(data);
-      } else if (interval === 'last7Days') {
-        if (fetchedDayData) {
-          data = getLast7DaysData(fetchedDayData);
-        } else {
-          console.error("No data fetched for 'day' interval.");
-          return;
+      } else if (timePeriod === 'year') {
+        // Group records by month for the year
+        const countsByMonth = sortedRecords.reduce((acc: { [key: string]: number }, record: any) => {
+          const date = new Date(record.recordTime);
+          const monthYearKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+          if (!acc[monthYearKey]) {
+            acc[monthYearKey] = 0;
+          }
+          acc[monthYearKey] += 1;
+          return acc;
+        }, {});
+
+        // Get the months for the year
+        for (let i = 0; i < 12; i++) {
+          const monthKey = `${new Date().getFullYear()}-${String(i + 1).padStart(2, '0')}`;
+          chartLabels.push(monthKey);
+          chartDataPoints.push(countsByMonth[monthKey] || 0);
         }
       } else {
-        data = await fetchData(`https://firealarmcamerasolution.azurewebsites.net/api/v1/FireDetection/${interval}`, token);
+        const countsByDate = sortedRecords.reduce((acc: { [key: string]: number }, record: any) => {
+          const date = new Date(record.recordTime).toISOString().split('T')[0];
+          if (!acc[date]) {
+            acc[date] = 0;
+          }
+          acc[date] += 1;
+          return acc;
+        }, {});
+
+        chartLabels = Object.keys(countsByDate).sort();
+        chartDataPoints = chartLabels.map(date => countsByDate[date]);
       }
 
-      let labels;
-
-      if (interval === 'day' || interval === 'last7Days') {
-        labels = data.map((item: any) => {
-          const date = new Date(item.Date);
-          return date.toISOString().split('T')[0];
-        });
-
-      } else if (interval === 'month') {
-        labels = data.map((item: any) => {
-          const date = new Date(item.Month);
-          return date.toISOString().split('T')[0];
-        });
-
-      } else if (interval === 'year') {
-        labels = data.map((item: any) => {
-          const date = new Date(item.Year);
-          return date.toISOString().split('T')[0];
-        });
-      }
-
-      const chartData = {
-        labels,
+      const data = {
+        labels: chartLabels,
         datasets: [
           {
-            label: `Incident count by ${interval}`,
-            data: data.map((item: any) => item.Count),
+            label: 'Record Count',
+            data: chartDataPoints,
             fill: false,
-            borderColor: 'rgb(100 181 246)',
+            borderColor: 'rgb(75, 192, 192)',
             tension: 0.1,
           },
         ],
       };
-      setChartData(chartData);
+
+      setChartData(data);
     } catch (error) {
-      console.error(`Error fetching data by ${interval}:`, error);
+      console.error('Updating chart data failed:', error);
     }
   };
-
-  useEffect(() => {
-    updateChartData('day');
-  }, [token]);
-
   useEffect(() => {
     if (startDate && endDate) {
-      updateChartData('day', startDate, endDate);
+      updateChartData(timePeriod);
     }
   }, [startDate, endDate]);
+
+  useEffect(() => {
+    updateChartData(timePeriod);
+  }, [token, timePeriod]);
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md flex flex-col">
       <div className="mb-6 flex flex-wrap items-center gap-2">
         <select
-          defaultValue="day"
-          onChange={(e) => updateChartData(e.target.value)}
+          value={timePeriod}
+          onChange={(e) => setTimePeriod(e.target.value as TimePeriod)}
           className="flex-grow sm:flex-grow-0 px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
         >
           <option value="day">Day</option>
-          <option value="last7Days">Last Week</option>
+          <option value="lastweek">Last Week</option>
           <option value="month">Month</option>
           <option value="year">Year</option>
         </select>
@@ -188,7 +243,6 @@ export default function Chart({ token }: { token: string | undefined }) {
             onClick={() => {
               setStartDate('');
               setEndDate('');
-              updateChartData('day');
             }}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:border-gray-400 focus:ring focus:ring-gray-300 focus:ring-opacity-50 transition duration-150 ease-in-out"
           >
@@ -196,13 +250,15 @@ export default function Chart({ token }: { token: string | undefined }) {
           </button>
         </div>
       </div>
-      {chartData ? (
-        <div className="flex-grow">
-          <Line data={chartData} options={{ maintainAspectRatio: true }} />
-        </div>
-      ) : (
-        <p className="text-center text-gray-500">Loading chart data...</p>
-      )}
-    </div>
+      {
+        chartData ? (
+          <div className="flex-grow">
+            <Line data={chartData} options={{ maintainAspectRatio: true }} />
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">Loading chart data...</p>
+        )
+      }
+    </div >
   );
 }

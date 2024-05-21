@@ -42,7 +42,7 @@ export default function Setting() {
       });
       if (res.ok) {
         const data = await res.json();
-        console.log(data.data);
+        // console.log(data.data);
         setAlarmConfigurations(data.data);
 
         const maxValues = data.data.slice(0, 4).map((config : AlarmConfiguration) => config.max);
