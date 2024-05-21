@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import AddCamera from './AddCamera';
 import UpdateCamera from './UpdateCamera';
 import FixCamera from './FixCamera';
+import DisconnectedCamera from './DisconnectedCamera';
+import Switch from 'react-switch';
+import { toast } from 'react-toastify';
 
 type Camera = {
     id: string;
@@ -31,6 +34,49 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
         name: '',
         status: ''
     });
+
+    const handleDisconnectCamera = async (cameraId : string) => {
+        try {
+            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera/${cameraId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                toast.success('Camera disconnected successfully');
+                refreshCameras();
+            } else {
+                toast.error('Failed to disconnect camera');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('An error occurred while trying to disconnect the camera');
+        }
+    };
+
+    const handleFixCamera = async (cameraId : string) => {
+        try {
+            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera/${cameraId}/active`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                toast.success('Camera fixed successfully');
+                refreshCameras();
+            } else {
+                const errorData = await response.json();
+                toast.error(errorData.Message || 'Failed to fix camera');
+            }
+        } catch (error) {
+            console.error('Error fixing camera:', error);
+            toast.error('Error fixing camera');
+        }
+    };
 
     const handleRowClick = (camera: any) => {
         const location = locations.find(loc => loc.locationName === camera.locationName);
@@ -259,10 +305,29 @@ const GetCamera = ({ token }: { token: string | undefined }) => {
                                             {camera.status}
                                         </span>
                                     </td>
-                                    <td>
-                                        {camera.status === 'Disconnected' ? (
-                                            <FixCamera cameraId={camera.cameraId} token={token} onCameraFixed={refreshCamerasAfterFix} />
-                                        ) : null}
+                                    <td onClick={(event) => event.stopPropagation()}>
+                                        {/* {
+                                            camera.status === 'Disconnected' ? (
+                                                <FixCamera cameraId={camera.cameraId} token={token} onCameraFixed={refreshCamerasAfterFix} />
+                                            ) : (
+                                                <DisconnectedCamera token={token} cameraId={camera.cameraId} onCameraAdded={refreshCamerasAfterFix} />
+                                            )
+                                        } */}
+                                        <Switch
+                                            onChange={(checked) => {
+                                                if (checked) {
+                                                    handleFixCamera(camera.cameraId);
+                                                } else {
+                                                    handleDisconnectCamera(camera.cameraId);
+                                                }
+                                            }}
+                                            checked={camera.status === 'Connected'}
+                                            offColor="#ff5f5f"
+                                            onColor="#22c55e"
+                                            checkedIcon={false}
+                                            uncheckedIcon={false}
+                                            className="react-switch"
+                                        />
                                     </td>
                                 </tr>
                             ))

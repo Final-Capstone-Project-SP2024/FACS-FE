@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import DisconnectedCamera from './DisconnectedCamera';
 
 type Camera = {
   cameraId: string;
@@ -62,8 +63,8 @@ export default function UpdateCamera({ cameraId, camera, onUpdate, token, showMo
           'Content-Type': 'application/json',
         },
       });
-      console.log(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera/${cameraId}`)
-      console.log(JSON.stringify({ destination, locationId, status }))
+      // console.log(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera/${cameraId}`)
+      // console.log(JSON.stringify({ destination, locationId, status }))
       if (response.ok) {
         toast.success('Camera updated successfully');
         onUpdate();

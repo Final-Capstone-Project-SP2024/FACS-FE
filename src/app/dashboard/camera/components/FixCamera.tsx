@@ -2,18 +2,19 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 
-interface FixCameraProps {
+type FixCameraProps = {
     token: string | undefined;
     cameraId: string;
     onCameraFixed: () => void;
   }
   
-  const FixCamera: React.FC<FixCameraProps> = ({ token, cameraId, onCameraFixed }) => {
+  const FixCamera = ({ token, cameraId, onCameraFixed } : FixCameraProps) => {
+    console.log(token, cameraId, onCameraFixed);
     const handleFixCamera = async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
   
       try {
-        const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera/${cameraId}/fix`, {
+        const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Camera/${cameraId}/active`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -24,7 +25,8 @@ interface FixCameraProps {
           toast.success('Camera fixed successfully');
           onCameraFixed();
         } else {
-          throw new Error('Failed to fix camera');
+          const errorData = await response.json();
+          toast.error(errorData.Message || 'Failed to fix camera');
         }
       } catch (error) {
         console.error('Error fixing camera:', error);
