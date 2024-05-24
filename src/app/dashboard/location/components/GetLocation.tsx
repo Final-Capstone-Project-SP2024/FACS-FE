@@ -3,10 +3,13 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import AddLocation from './AddLocation';
 import UpdateLocation from './UpdateLocation';
+import { toast } from 'react-toastify';
+import Switch from 'react-switch';
 
 type Location = {
     locationId: string;
     locationName: string;
+    isDeleted: boolean;
 };
 
 export default function GetLocation({ token }: { token: string | undefined }) {
@@ -33,13 +36,16 @@ export default function GetLocation({ token }: { token: string | undefined }) {
             });
             if (res.ok) {
                 const apiResponse = await res.json();
-                setLocations(apiResponse.data);
-                setFilteredLocations(apiResponse.data); // Initialize filteredLocations
+                const sortedLocations = apiResponse.data.sort((a: any, b: any) => {
+                    return a.locationName.localeCompare(b.locationName);
+                });
+                setLocations(sortedLocations);
+                setFilteredLocations(sortedLocations);
             } else {
-                throw new Error('Failed to fetch location');
+                throw new Error('Failed to fetch locations');
             }
         } catch (error) {
-            setError('Error fetching location');
+            setError('Error fetching locations');
         } finally {
             setLoading(false);
         }
@@ -81,6 +87,55 @@ export default function GetLocation({ token }: { token: string | undefined }) {
         setShowModal(true);
     };
 
+    const handleEnableLocation = async (locationId: string) => {
+        console.log('Enabling location:', locationId);
+        try {
+            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}/active`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(response);
+
+
+            if (response.ok) {
+                toast.success('Location enabled successfully');
+                fetchLocations();
+            } else {
+                toast.error('Failed to enable location');
+            }
+        } catch (error) {
+            console.error('Error enabling location:', error);
+            toast.error('An error occurred while trying to enable the location');
+        }
+    };
+
+    const handleDisableLocation = async (locationId: string) => {
+        console.log('Disabling location:', locationId);
+        try {
+            const response = await fetch(`https://firealarmcamerasolution.azurewebsites.net/api/v1/Location/${locationId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(response);
+
+            if (response.ok) {
+                toast.success('Location disabled successfully');
+                fetchLocations();
+            } else {
+                toast.error('Failed to disable location');
+            }
+        } catch (error) {
+            console.error('Error disabling location:', error);
+            toast.error('An error occurred while trying to disable the location');
+        }
+    };
+
     return (
         <div className='bg-gray-100 p-4'>
             <div className="flex justify-between items-center mb-4">
@@ -105,6 +160,7 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Location Name</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Number of Cameras</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Number of Security</th>
+                            <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Action</th>
                             <th className="border-b-2 border-gray-200 px-4 py-2 text-left text-gray-600">Details</th>
                         </tr>
                     </thead>
@@ -115,6 +171,23 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.locationName}</td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfCamera}</td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{location.numberOfSecurity}</td>
+                                <td className="border-b-2 border-gray-200 px-4 py-2 text-left" onClick={(event) => event.stopPropagation()}>
+                                    <Switch
+                                        onChange={(checked) => {
+                                            if (checked) {
+                                                handleEnableLocation(location.locationId);
+                                            } else {
+                                                handleDisableLocation(location.locationId);
+                                            }
+                                        }}
+                                        checked={!location.isDeleted}
+                                        offColor="#ff5f5f"
+                                        onColor="#22c55e"
+                                        checkedIcon={false}
+                                        uncheckedIcon={false}
+                                        className="react-switch"
+                                    />
+                                </td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
                                     <Link href={`location/${location.locationId}`} className="text-blue-500 hover:underline" onClick={(e) => e.stopPropagation()}>
                                         Details

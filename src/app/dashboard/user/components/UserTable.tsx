@@ -24,7 +24,9 @@ type User = {
         roleName: string;
     };
     status: string;
-    locationName: string;
+    locations: {
+        locationName: string;
+    }[];
     token: string | undefined;
 };
 
@@ -131,7 +133,7 @@ export default function UserTable({ token }: { token: string | undefined }) {
                     <option value="Inactive">Inactive</option>
                 </select>
             </div>
-            <AddUser token={token} onUserAdded={fetchUsers}/>
+            <AddUser token={token} onUserAdded={fetchUsers} />
         </div>
     );
 
@@ -195,7 +197,9 @@ export default function UserTable({ token }: { token: string | undefined }) {
                                             }`}>{user.status}
                                         </span>
                                     </td>
-                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{user.locationName}</td>
+                                    <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                                        {user.locations.map(loc => loc.locationName).join(', ')}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

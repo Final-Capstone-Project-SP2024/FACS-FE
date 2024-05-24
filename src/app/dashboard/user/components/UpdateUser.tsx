@@ -4,6 +4,10 @@ import InactiveUser from './InactiveUser';
 import { toast } from 'react-toastify';
 import ActiveUser from './ActiveUser';
 
+type Location = {
+    locationName: string;
+};
+
 type User = {
     id: string;
     securityCode: string;
@@ -14,7 +18,7 @@ type User = {
         roleName: string;
     };
     status: string;
-    locationName: string;
+    locations: Location[];
     token: string | undefined;
 };
 
