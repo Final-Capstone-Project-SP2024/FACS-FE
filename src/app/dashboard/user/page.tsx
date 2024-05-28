@@ -12,11 +12,12 @@ type SearchParamsProps = {
 
 export default async function User({ searchParams }: SearchParamsProps, token: string | undefined) {
   const session = await getServerSession(authOptions);
+  // console.log(session);
   token = session?.user.data.accessToken;
   // const listUsers: IUsers = await getUsers(token);
   // console.log(listUsers?.data.results);
   // const user = listUsers?.data.results;
-  console.log(searchParams.Page);
+  // console.log(searchParams.Page);
 
   return (
     <div className='container mx-auto'>

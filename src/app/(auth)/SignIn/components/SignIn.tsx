@@ -10,14 +10,14 @@ export default function SignIn() {
     const [securityCode, setSecurityCode] = useState("");
     const [password, setPassword] = useState("");
     const [isLoggingIn, setIsLoggingIn] = useState(false);
-    const router = useRouter();
-    const { data: session, status } = useSession();
+    // const router = useRouter();
+    // const { data: session, status } = useSession();
 
-    useEffect(() => {
-        if (status === 'authenticated') {
-            router.push('/dashboard');
-        }
-    }, [router, session, status]);
+    // useEffect(() => {
+    //     if (status === 'authenticated') {
+    //         router.push('/dashboard');
+    //     }
+    // }, [router, session, status]);
 
     const handleSignin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -87,8 +87,12 @@ export default function SignIn() {
                             />
                         </div>
 
-                        <button className="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-6">
-                            Log In
+                        <button
+                            type="submit"
+                            disabled={isLoggingIn}
+                            className={`w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-6 ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isLoggingIn ? 'Logging in...' : 'Log In'}
                         </button>
                     </form>
                 </div>
