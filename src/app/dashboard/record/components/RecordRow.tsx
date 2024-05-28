@@ -43,7 +43,7 @@ const handleGetRecords = async (
   page: number,
   filters: { status?: string; fromDate?: string; toDate?: string }
 ) => {
-  var url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=${page}&PageSize=10&SortType=1&ColName=recordTime&FromDate=2020-1-1&ToDate=2030-1-1`;
+  var url = `https://firealarmcamerasolution.azurewebsites.net/api/v1/Record?Page=${page}&PageSize=10&SortType=1&ColName=recordTime`;
 
   if (filters.status) {
     url += `&Status=${encodeURIComponent(filters.status)}`;
@@ -84,7 +84,10 @@ const RecordRow = ({ token }: { token: string | undefined }) => {
   const [records, setRecords] = useState<RecordProps[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [filters, setFilters] = useState<{ status?: string; fromDate?: string; toDate?: string }>({});
+  const [filters, setFilters] = useState<{ status?: string; fromDate?: string; toDate?: string }>({
+    fromDate: '2020-01-01',
+    toDate: '2030-01-01',
+  });
 
   useEffect(() => {
     const fetchRecords = async () => {
