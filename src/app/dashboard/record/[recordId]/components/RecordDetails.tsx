@@ -179,8 +179,8 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
                   controls
                   className="rounded-lg shadow-md"
                 >
-                  <source src={mainMediaUrl} type="video/mp4" /> // Source of the video
-                  Your browser does not support the video tag. // Fallback text if the video tag is not supported
+                  <source src={mainMediaUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
                 </video>
               )
             ) : (
