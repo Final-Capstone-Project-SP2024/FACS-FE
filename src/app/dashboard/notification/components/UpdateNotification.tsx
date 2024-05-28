@@ -42,14 +42,27 @@ export default function UpdateNotification({ notification, token, onUpdate, onCl
                 onClose();
             } else {
                 const errorData = await res.json();
-                toast.error(errorData.Message || 'Failed to update notification');
+                if (errorData.errors) {
+                    if (errorData.errors.Title) {
+                        errorData.errors.Title.forEach((error: string) => {
+                            toast.error("Title " + error);
+                        });
+                    }
+                    if (errorData.errors.Context) {
+                        errorData.errors.Context.forEach((error: string) => {
+                            toast.error("Context " + error);
+                        });
+                    }
+                } else {
+                    toast.error(errorData.Message || 'Failed to update notification');
+                }
             }
         } catch (error) {
             console.error('Error updating notification:', error);
         }
     };
 
-    return (    
+    return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
             <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                 <div className="mt-3 text-center">
