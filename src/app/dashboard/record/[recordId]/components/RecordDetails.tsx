@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import Image from 'next/image';
 import { FaRegPlayCircle } from "react-icons/fa";
 import AlarmLevel from './AlarmLevel';
+import errorImg from '../../../../../../public/error-camera-icon.png'
 
 const firebaseConfig = {
   apiKey: "AIzaSyD_kES-S_Kg6loaZmTIQdlTjs9danQqAoM",
@@ -161,15 +162,36 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
       <div className='flex flex-col lg:flex-row gap-4'>
         <div className="bg-white rounded-lg shadow-md p-6 lg:w-1/2">
           <div>
-            {isImageMain ? (
-              <Image src={mainMediaUrl} alt="Main Media" layout="responsive" width={1000} height={562} className="rounded-lg shadow-md" priority />
+            {mainMediaUrl ? (
+              isImageMain ? (
+                <Image
+                  src={mainMediaUrl}
+                  alt="Image"
+                  layout="responsive"
+                  width={1000}
+                  height={562}
+                  className="rounded-lg shadow-md"
+                  priority
+                />
+              ) : (
+                <video
+                  width="100%"
+                  controls
+                  className="rounded-lg shadow-md"
+                >
+                  <source src={mainMediaUrl} type="video/mp4" /> // Source of the video
+                  Your browser does not support the video tag. // Fallback text if the video tag is not supported
+                </video>
+              )
             ) : (
-              <video width="100%" controls className="rounded-lg shadow-md">
-                <source src={mainMediaUrl} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <div className="flex flex-col justify-center items-center h-96">
+                <Image src={errorImg} alt="Error" width={200} height={200} />
+                <h1 className='my-6 font-bold text-xl'>Electrical Incident - No Image or Video available</h1>
+              </div>
             )}
+
           </div>
+
           <div className='flex flex-row mt-2 gap-2'>
             {imageUrl && (
               <div

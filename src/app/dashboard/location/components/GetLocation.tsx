@@ -104,7 +104,9 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                 toast.success('Location enabled successfully');
                 fetchLocations();
             } else {
-                toast.error('Failed to enable location');
+                const errorData = await response.json();
+                toast.error(errorData.Message || 'Failed to enable location');
+                // toast.error('Failed to enable location');
             }
         } catch (error) {
             console.error('Error enabling location:', error);
@@ -189,10 +191,12 @@ export default function GetLocation({ token }: { token: string | undefined }) {
                                     />
                                 </td>
                                 <td className="border-b-2 border-gray-200 px-4 py-2 text-left">
+                                    {location.isDeleted ? null : 
                                     <Link href={`location/${location.locationId}`} className="text-blue-500 hover:underline" onClick={(e) => e.stopPropagation()}>
                                         Details
-                                    </Link>
+                                    </Link>}
                                 </td>
+                                
                             </tr>
                         ))}
                     </tbody>
