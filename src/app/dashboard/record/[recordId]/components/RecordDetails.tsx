@@ -40,7 +40,7 @@ const handleGetRecordDetails = async (recordId: string, token: string | undefine
 
 type Vote = {
   securityCode: string;
-  voteLevel: string;
+  voteLevel: number;
   voteType: string;
 };
 
@@ -288,7 +288,7 @@ export default function RecordDetails({ recordId, token }: { recordId: string, t
                         <tr key={index} className="hover:bg-gray-50">
                           <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{index + 1}</td>
                           <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{vote.securityCode}</td>
-                          <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{vote.voteLevel}</td>
+                          <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{(vote.voteLevel === 6 || vote.voteLevel === 7) ? null : vote.voteLevel}</td>
                           <td className="border-b-2 border-gray-200 px-4 py-2 text-left">{vote.voteType}</td>
                         </tr>
                       ))}
